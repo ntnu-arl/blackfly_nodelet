@@ -75,18 +75,20 @@ public:
     }
     ros::Time ros_time_now = image_stamp;
 
-    if (!m_time_stamp_deque_ptr->empty()) {
-      // ros::Time curr_time = m_time_stamp_deque_ptr->back().stamp;
-      image_stamp = m_time_stamp_deque_ptr->back().stamp;
-      m_time_stamp_deque_ptr->pop_back();
-      // ros::Duration sampling_time = curr_time - prev_time_;
-      // prev_time_ = curr_time;
-      // std::cout << sampling_time << std::endl;
-    } else {
-      // image_stamp = ros::Time(0);
-      ROS_WARN("image without trigger");
-      image->Release();
-      return;
+    if (m_cam_ptr->TriggerMode.GetValue() == TriggerMode_On) {
+      if (!m_time_stamp_deque_ptr->empty()) {
+        // ros::Time curr_time = m_time_stamp_deque_ptr->back().stamp;
+        image_stamp = m_time_stamp_deque_ptr->back().stamp;
+        m_time_stamp_deque_ptr->pop_back();
+        // ros::Duration sampling_time = curr_time - prev_time_;
+        // prev_time_ = curr_time;
+        // std::cout << sampling_time << std::endl;
+      } else {
+        // image_stamp = ros::Time(0);
+        ROS_WARN("image without trigger");
+        image->Release();
+        return;
+      }
     }
 
     if (m_exp_time_comp_flag) {
