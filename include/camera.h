@@ -91,12 +91,15 @@ class blackfly_camera
 		}
 		~blackfly_camera()
 		{
-			m_cam_ptr->EndAcquisition();
-			m_cam_ptr->UnregisterEvent(*m_image_event_handler_ptr);
-			m_cam_ptr->UnregisterEvent(*m_device_event_handler_ptr);
-			delete m_image_event_handler_ptr;
-			delete m_device_event_handler_ptr;
-			m_cam_ptr->DeInit();
+			if(m_cam_ptr->IsValid())
+			{
+				m_cam_ptr->EndAcquisition();
+				m_cam_ptr->UnregisterEvent(*m_image_event_handler_ptr);
+				m_cam_ptr->UnregisterEvent(*m_device_event_handler_ptr);
+				delete m_image_event_handler_ptr;
+				delete m_device_event_handler_ptr;
+				m_cam_ptr->DeInit();
+			}
 		}
 		void setup_camera()
 		{

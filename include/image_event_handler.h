@@ -33,10 +33,11 @@ class ImageEventHandler : public ImageEvent
 			m_c_info_mgr_ptr = p_c_info_mgr_ptr;
 			m_device_event_handler_ptr = p_device_event_handler_ptr;
 			m_last_image_stamp = ros::Time(0,0);
+			p_cam_ptr = nullptr;
 		}
 		~ImageEventHandler()
 		{
-
+			m_cam_ptr = nullptr;
 		}
 		void OnImageEvent(ImagePtr image)
 		{

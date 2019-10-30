@@ -51,13 +51,10 @@ namespace blackfly
 			void enable_chunk_data(INodeMap &cam_node_map);
 			image_transport::ImageTransport* image_transport_ptr;
 			boost::shared_ptr<camera_info_manager::CameraInfoManager>c_info_mgr_ptr;
-			std::vector<blackfly_camera> camera_list; 
 			int numCameras;
 			SystemPtr system;
 			CameraList camList;
-			
-			ImageEventHandler *image_event_handler;
-			DeviceEventHandler *device_event_handler;
+			std::vector<blackfly_camera*> m_cam_vect;
 	};
 }
 #endif // BLACKFLYNODELET_

@@ -62,7 +62,6 @@ class DeviceEventHandler : public DeviceEvent
 		}
 		~DeviceEventHandler()
 		{
-
 		}
 		void OnDeviceEvent(gcstring eventName)
 		{

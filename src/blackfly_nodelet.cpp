@@ -9,6 +9,10 @@ namespace blackfly
 {
 	blackfly_nodelet::~blackfly_nodelet()
 	{
+		for(auto it = m_cam_vect.begin(); it < m_cam_vect.end(); it++)
+		{
+			delete *it;
+		}
 		// Release system
 		camList.Clear();
 		system->ReleaseInstance();	
@@ -83,7 +87,7 @@ namespace blackfly
 			ROS_FATAL("No spinnaker camera detected!");
 			return;
 		}
-
+		
 		for(int i = 0; i < camera_names.size(); i++)
 		{
 			CameraPtr cam_ptr;
@@ -106,6 +110,7 @@ namespace blackfly
 							auto_gain_flags[i],gains[i], max_gains[i], min_gains[i],  enable_gamma[i], gammas[i]);
 
 			blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr, image_transport_ptr, &pnh);
+			m_cam_vect.push_back(blackfly_ptr);
 			ROS_INFO("Successfully launch camera : %s, Serial : %s", settings.cam_name.c_str(), camera_serials[i].c_str());
 		}
 	}
