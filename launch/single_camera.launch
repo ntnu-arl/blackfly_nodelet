@@ -4,7 +4,7 @@
 
   <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen"> 
     <!-- Serial Numbers of Cameras -->
-    <rosparam param="camera_serial_nums">["19292936"]</rosparam> 
+    <rosparam param="camera_serial_nums">["19061370"]</rosparam> 
     <!-- Names of Cameras (used for topic names, etc) -->
     <rosparam param="camera_names">["cam1"]</rosparam>
     <!-- Paths to Camera info files -->
@@ -26,7 +26,7 @@
     <rosparam param="fixed_exp">        [20000.0]</rosparam>
 
     <!-- Use Auto Gain Flag -->
-    <rosparam param="auto_gains">       [true]</rosparam>
+    <rosparam param="auto_gains">       [true</rosparam>
     <!-- Gain Bounds if using Auto Gain -->
     <rosparam param="max_gains">        [2.0]</rosparam>
     <rosparam param="min_gains">        [0.5]</rosparam>
