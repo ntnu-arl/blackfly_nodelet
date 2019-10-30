@@ -91,6 +91,7 @@ namespace blackfly
 			gammas.size() != num_cameras_listed)
 		{
 			ROS_FATAL("Camera settings don't match number of camera names");
+			ros::shutdown();
 		}
 
 		system = System::GetInstance();
@@ -103,7 +104,7 @@ namespace blackfly
 			camList.Clear();
 			system->ReleaseInstance();
 			ROS_FATAL("No spinnaker camera detected!");
-			return;
+			ros::shutdown();
 		}
 		
 		for(int i = 0; i < camera_names.size(); i++)
@@ -114,7 +115,9 @@ namespace blackfly
 				cam_ptr = camList.GetBySerial(camera_serials[i]);
 				if(!cam_ptr->IsValid())
 				{
-					ROS_FATAL("Failed to get camera pointer from spinnaker");
+					ROS_FATAL("Failed to get camera pointer from spinnaker for camera serial: %s", camera_serials[i].c_str());
+					camList.Clear();
+					system->ReleaseInstance();
 					ros::shutdown();
 				}
 			}

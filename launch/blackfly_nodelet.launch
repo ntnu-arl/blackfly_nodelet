@@ -4,39 +4,39 @@
 
   <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen"> 
     <!-- Serial Numbers of Cameras -->
-    <rosparam param="camera_serial_nums">["19292936", "19203121"]</rosparam> 
+    <rosparam param="camera_serial_nums">["19292936"]</rosparam> 
     <!-- Names of Cameras (used for topic names, etc) -->
-    <rosparam param="camera_names">["cam1", "cam2"]</rosparam>
+    <rosparam param="camera_names">["cam1"]</rosparam>
     <!-- Paths to Camera info files -->
-    <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_1.info", ""]</rosparam> 
+    <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_1.info"]</rosparam> 
 
     <!-- Publish Mono Images Flag : True = Mono8, False = BGR8 -->
-    <rosparam param="mono_flags">[true, true]</rosparam>
+    <rosparam param="mono_flags">[true]</rosparam>
     <!-- Is the camera triggered? True = Line0, False = FrameRate -->
-    <rosparam param="is_triggered_flags">[false, false]</rosparam>
+    <rosparam param="is_triggered_flags">[false]</rosparam>
     <!-- Frame Rate if not triggered-->
-    <rosparam param="fps">[20.0, 20.0]</rosparam>
+    <rosparam param="fps">[20.0]</rosparam>
 
     <!-- Use Auto Exposure flag -->
-    <rosparam param="is_auto_exp_flags">[true, true]</rosparam>
+    <rosparam param="is_auto_exp_flags">[true]</rosparam>
     <!-- Auto Exposure Bounds if using Auto Exposure (uSecs) -->
-    <rosparam param="max_auto_exp">     [30000.0, 30000.0]</rosparam>
-    <rosparam param="min_auto_exp">     [500.0, 500.0]</rosparam>
+    <rosparam param="max_auto_exp">     [30000.0]</rosparam>
+    <rosparam param="min_auto_exp">     [500.0]</rosparam>
     <!-- Fixed Exposure if not Auto (uSecs) -->
-    <rosparam param="fixed_exp">        [20000.0, 20000.0]</rosparam>
+    <rosparam param="fixed_exp">        [20000.0]</rosparam>
 
     <!-- Use Auto Gain Flag -->
-    <rosparam param="auto_gains">       [true, true]</rosparam>
+    <rosparam param="auto_gains">       [true]</rosparam>
     <!-- Gain Bounds if using Auto Gain -->
-    <rosparam param="max_gains">        [2.0, 2.0]</rosparam>
-    <rosparam param="min_gains">        [0.5, 0.5]</rosparam>
+    <rosparam param="max_gains">        [2.0]</rosparam>
+    <rosparam param="min_gains">        [0.5]</rosparam>
     <!-- Fixed Gain if not Auto Gain -->
-    <rosparam param="gains">            [1.0, 1.0]</rosparam>
+    <rosparam param="gains">            [1.0]</rosparam>
 
     <!-- Enable Gamma Correction -->
-    <rosparam param="enable_gamma">     [true, true]</rosparam>
+    <rosparam param="enable_gamma">     [true]</rosparam>
     <!-- Gamma setting if using Gamma Correction -->
-    <rosparam param="gammas">           [1.0, 1.0]</rosparam>
+    <rosparam param="gammas">           [1.0]</rosparam>
 
   </node>
 </launch>
