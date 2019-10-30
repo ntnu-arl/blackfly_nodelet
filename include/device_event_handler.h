@@ -18,7 +18,6 @@ class DeviceEventHandler : public DeviceEvent
 			INodeMap &node_map = cam_ptr->GetNodeMap();
 			try
 			{
-				ROS_INFO("ENABLING Exposure Event");
 				CEnumerationPtr ptrEventSelector = node_map.GetNode("EventSelector");
 				if (!IsAvailable(ptrEventSelector) || !IsReadable(ptrEventSelector))
 				{
@@ -52,13 +51,12 @@ class DeviceEventHandler : public DeviceEvent
 							continue;
 						}
 						ptrEventNotification->SetIntValue(ptrEventNotificationOn->GetValue());
-						ROS_INFO("EXPOSURE END EVENT ENABLED!");
 					}
 				}
 			}
 			catch (Spinnaker::Exception &e)
 			{
-				ROS_ERROR("Failed to configure device event handler");
+				ROS_FATAL("Failed to configure device event handler");
 			}
 			cam_ptr = nullptr;
 		}
@@ -71,9 +69,6 @@ class DeviceEventHandler : public DeviceEvent
 			if(eventName == "EventExposureEnd")
 			{
 				m_last_exp_end = ros::Time::now();
-				// ros::Time stamp
-				// m_exposure_end_queue.push_back(stamp);
-				// ROS_INFO("EXP END EVENT : %f", stamp.toSec());
 			}
 		}
 		ros::Time get_last_exposure_end()

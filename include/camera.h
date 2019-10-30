@@ -70,7 +70,6 @@ class blackfly_camera
 	public:
 		blackfly_camera(camera_settings settings, CameraPtr cam_ptr, image_transport::ImageTransport* image_transport_ptr, ros::NodeHandle* pnh)
 		{
-			ROS_INFO("Blackfly Constructor");
 			m_cam_ptr = cam_ptr;
 			m_cam_settings = settings;
 
@@ -81,17 +80,13 @@ class blackfly_camera
 			m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
 			m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
-			ROS_INFO("Initing Camera");
 			setup_camera();
 
-			ROS_INFO("Creating Event Handlers");
 			m_device_event_handler_ptr = new DeviceEventHandler(m_cam_ptr);
 			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr);
 		
-			ROS_INFO("Registering Event Handlers");
 			m_cam_ptr->RegisterEvent(*m_device_event_handler_ptr);
 			m_cam_ptr->RegisterEvent(*m_image_event_handler_ptr);
-			ROS_INFO("Constructor Complete");
 			m_cam_ptr->BeginAcquisition();
 		}
 		~blackfly_camera()

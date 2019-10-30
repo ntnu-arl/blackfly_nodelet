@@ -106,8 +106,7 @@ namespace blackfly
 							auto_gain_flags[i],gains[i], max_gains[i], min_gains[i],  enable_gamma[i], gammas[i]);
 
 			blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr, image_transport_ptr, &pnh);
-
-			
+			ROS_INFO("Successfully launch camera : %s, Serial : %s", settings.cam_name.c_str(), camera_serials[i].c_str());
 		}
 	}
 } // end namespace blackfly
