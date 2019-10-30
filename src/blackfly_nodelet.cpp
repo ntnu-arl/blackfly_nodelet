@@ -73,7 +73,25 @@ namespace blackfly
 		std::vector<float> gammas;
 		pnh.getParam("gammas", gammas);
 
-
+		int num_cameras_listed = camera_names.size();
+		if(camera_serials.size() != num_cameras_listed || 
+			camera_info_paths.size() != num_cameras_listed || 
+			mono_flags.size() != num_cameras_listed || 
+			is_triggered_flags.size() != num_cameras_listed || 
+			fps.size() != num_cameras_listed || 
+			is_auto_exp_flags.size() != num_cameras_listed || 
+			max_auto_exp.size() != num_cameras_listed || 
+			min_auto_exp.size() != num_cameras_listed || 
+			fixed_exp.size() != num_cameras_listed || 
+			auto_gain_flags.size() != num_cameras_listed || 
+			gains.size() != num_cameras_listed || 
+			max_gains.size() != num_cameras_listed || 
+			min_gains.size() != num_cameras_listed || 
+			enable_gamma.size() != num_cameras_listed || 
+			gammas.size() != num_cameras_listed)
+		{
+			ROS_FATAL("Camera settings don't match number of camera names");
+		}
 
 		system = System::GetInstance();
 		camList = system->GetCameras();
