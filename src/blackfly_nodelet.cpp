@@ -86,30 +86,28 @@ namespace blackfly
 
 		for(int i = 0; i < camera_names.size(); i++)
 		{
-			bool failed = false;
 			CameraPtr cam_ptr;
 			try
 			{
 				cam_ptr = camList.GetBySerial(camera_serials[i]);
 				if(!cam_ptr->IsValid())
 				{
-					failed = true;
-					ROS_ERROR("Failed to get camera pointer from spinnaker");
+					ROS_FATAL("Failed to get camera pointer from spinnaker");
+					ros::shutdown();
 				}
 			}
 			catch(const std::exception& e)
 			{
-				failed = true;
-				ROS_ERROR("Failed to find camera with serial : %s", camera_serials[i].c_str());
+				ROS_FATAL("Failed to find camera with serial : %s", camera_serials[i].c_str());
+				ros::shutdown();
 			}
-			if(!failed)
-			{
-				camera_settings settings(camera_names[i], camera_info_paths[i], mono_flags[i], 
-								is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
-								auto_gain_flags[i],gains[i], max_gains[i], min_gains[i],  enable_gamma[i], gammas[i]);
+			camera_settings settings(camera_names[i], camera_info_paths[i], mono_flags[i], 
+							is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
+							auto_gain_flags[i],gains[i], max_gains[i], min_gains[i],  enable_gamma[i], gammas[i]);
 
-				blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr, image_transport_ptr, &pnh);
-			}
+			blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr, image_transport_ptr, &pnh);
+
+			
 		}
 	}
 } // end namespace blackfly
