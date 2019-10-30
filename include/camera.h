@@ -74,9 +74,11 @@ class blackfly_camera
 			m_cam_ptr = cam_ptr;
 			m_cam_settings = settings;
 
+			ros::NodeHandle nh(*pnh, settings.cam_name);
+
 			m_image_transport_ptr = image_transport_ptr;
 			m_cam_pub = image_transport_ptr->advertiseCamera(m_cam_settings.cam_name, 10);
-			m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(*pnh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
+			m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
 			m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
 			ROS_INFO("Initing Camera");
@@ -181,6 +183,7 @@ class blackfly_camera
 			}
 		}
 	private:
+		
 		CameraPtr m_cam_ptr;
 		camera_settings m_cam_settings;
 		ImageEventHandler *m_image_event_handler_ptr;
