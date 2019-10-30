@@ -1,0 +1,27 @@
+<launch>
+
+  <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen"/>
+
+  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen"> 
+    # This is the ID number on the back of the camera
+    <rosparam param="camera_serial_nums">["19292936"]</rosparam> 
+    <rosparam param="camera_names">["cam1"]</rosparam>
+    <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_1.info"]</rosparam> 
+
+
+    <rosparam param="mono_flags">[true]</rosparam>
+    <rosparam param="is_triggered_flags">[false]</rosparam>
+    <rosparam param="fps">[20.0]</rosparam>
+    <rosparam param="is_auto_exp_flags">[true]</rosparam>
+    <rosparam param="max_auto_exp">     [30000.0]</rosparam>
+    <rosparam param="min_auto_exp">     [500.0]</rosparam>
+    <rosparam param="fixed_exp">        [20000.0]</rosparam>
+    <rosparam param="auto_gains">       [true]</rosparam>
+    <rosparam param="max_gains">        [2.0]</rosparam>
+    <rosparam param="min_gains">        [0.5]</rosparam>
+    <rosparam param="gains">            [1.0]</rosparam>
+    <rosparam param="enable_gamma">     [true]</rosparam>
+    <rosparam param="gammas">           [1.0]</rosparam>
+
+  </node>
+</launch>
