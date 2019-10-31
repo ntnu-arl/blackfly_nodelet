@@ -7,3 +7,7 @@ Images are timestamped using the End of Exposure event given by the Spinnaker AP
 
 ## Disclosure
 This driver is untested and not field proven. Use at your own risk.
+
+## Notes:
+1. Camera Frame rate may drop if the camera is not connected to a USB3.0 port. 
+2. If using auto exposure, auto gain, and gamma correction, the camera tends to choose the maximum exposure value.
