@@ -2,6 +2,8 @@
 
 Simple ROS driver wrapping the spinnaker API for Blackfly Cameras.
 
-This driver is untested and not field proven. Use at your own risk.
+## Timestamping
+Images are timestamped using the End of Exposure event given by the Spinnaker API. When this event occurs, the current ROS time is saved in the device event handler class. The device event handler then queries the camera for its current exposure time. The exposure time is divided by 2, and this time is subtracted from the saved time stamp. This procedure is performed in order to move the image's timestamp to the middle of the camera's exposure. 
 
--Frank
+## Disclosure
+This driver is untested and not field proven. Use at your own risk.

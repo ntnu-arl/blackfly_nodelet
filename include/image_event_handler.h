@@ -42,8 +42,10 @@ class ImageEventHandler : public ImageEvent
 		void OnImageEvent(ImagePtr image)
 		{
 			ros::Time image_arrival_time = ros::Time::now();
+			// get the last end of exposure envent from the device event handler (already exposure time compensated)
 			ros::Time last_event_stamp = m_device_event_handler_ptr->get_last_exposure_end();
 			ros::Time image_stamp;
+			// if the last event stamp is 0, no end of exposure event was received, assign the image arrival time instead
 			if(last_event_stamp.toSec() == 0.0)
 			{
 				image_stamp = image_arrival_time;
@@ -52,7 +54,7 @@ class ImageEventHandler : public ImageEvent
 			{
 				image_stamp = last_event_stamp;
 			}
-			// ROS_INFO("IMAGE Time Diff = %f",  image_arrival_time.toSec() - image_stamp.toSec());
+			ROS_INFO("Time Diff b/w arrival time and stamp = %f mSec",  (image_arrival_time.toSec() - image_stamp.toSec()) * 1000.0);
 			if (image->IsIncomplete())
 			{
 				ROS_ERROR("Blackfly nodelet : Image retrieval failed : image incomplete");
@@ -85,7 +87,6 @@ class ImageEventHandler : public ImageEvent
 					ROS_ERROR("Unknown pixel format");
 					return;
 				}
-
 				image_msg->header.frame_id = m_cam_name;
 				image_msg->header.stamp = image_stamp;
 				

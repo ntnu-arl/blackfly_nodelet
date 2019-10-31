@@ -70,23 +70,31 @@ class blackfly_camera
 	public:
 		blackfly_camera(camera_settings settings, CameraPtr cam_ptr, image_transport::ImageTransport* image_transport_ptr, ros::NodeHandle* pnh)
 		{
+			// save the camera pointer and the settings object
 			m_cam_ptr = cam_ptr;
 			m_cam_settings = settings;
 
+			// create a new node handle 
 			ros::NodeHandle nh(*pnh, settings.cam_name);
 
+			// setup ros image transport
 			m_image_transport_ptr = image_transport_ptr;
 			m_cam_pub = image_transport_ptr->advertiseCamera(m_cam_settings.cam_name, 10);
 			m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
 			m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
+			// setup the camera
 			setup_camera();
 
+			// create event handlers
 			m_device_event_handler_ptr = new DeviceEventHandler(m_cam_ptr);
 			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr);
 		
+			// register event handlers
 			m_cam_ptr->RegisterEvent(*m_device_event_handler_ptr);
 			m_cam_ptr->RegisterEvent(*m_image_event_handler_ptr);
+
+			// must begin acquisition after registering the image event handler
 			m_cam_ptr->BeginAcquisition();
 		}
 		~blackfly_camera()
@@ -107,9 +115,8 @@ class blackfly_camera
 			{
 				// initialize the camera
 				m_cam_ptr->Init();
-				// stop acquisition
+				// stop acquisition, must be stopped before any settings can be changed
 				m_cam_ptr->AcquisitionStop();
-
 				// Set up pixel format
 				if(m_cam_settings.mono)
 				{
@@ -120,49 +127,34 @@ class blackfly_camera
 					m_cam_ptr->PixelFormat = PixelFormat_BGR8;
 				}
 
-				// set acquisition mode
+				// set acquisition mode, Continuous instead of single frame or burst modes
 				m_cam_ptr->AcquisitionMode = AcquisitionMode_Continuous;
 
-				// setup trigger parameters
-				if(m_cam_settings.is_triggered)
-				{
-					m_cam_ptr->TriggerMode = TriggerMode_Off;
-					m_cam_ptr->TriggerSource = TriggerSource_Line0;
-					// m_cam_ptr->TriggerSource = TriggerSource_Line1;
-					// m_cam_ptr->TriggerSource = TriggerSource_Line2;
-					// m_cam_ptr->TriggerSource = TriggerSource_Line2;
-					m_cam_ptr->TriggerMode = TriggerMode_On;
-				}
-				else
-				{
-					m_cam_ptr->TriggerMode = TriggerMode_Off;
-					m_cam_ptr->AcquisitionFrameRateEnable = true;
-					m_cam_ptr->AcquisitionFrameRate = m_cam_settings.fps;
-				}
-				m_cam_ptr->ExposureMode = ExposureMode_Timed;
-
+				// setup exposure
 				if(m_cam_settings.is_auto_exp)
 				{
+					m_cam_ptr->ExposureAuto = ExposureAuto_Continuous;
 					m_cam_ptr->AutoExposureExposureTimeUpperLimit = m_cam_settings.max_auto_exp_time;
 					m_cam_ptr->AutoExposureExposureTimeLowerLimit = m_cam_settings.min_auto_exp_time;
-					m_cam_ptr->ExposureAuto = ExposureAuto_Continuous;
 				}
 				else
 				{
 					m_cam_ptr->ExposureAuto = ExposureAuto_Off;
 					m_cam_ptr->ExposureTime = m_cam_settings.fixed_exp_time;
 				}
+				// setup gain
 				m_cam_ptr->GainAuto = GainAuto_Off;
 				if(m_cam_settings.auto_gain)
 				{
+					m_cam_ptr->GainAuto = GainAuto_Continuous;
 					m_cam_ptr->AutoExposureGainUpperLimit = m_cam_settings.max_gain;
 					m_cam_ptr->AutoExposureGainLowerLimit = m_cam_settings.min_gain;
-					m_cam_ptr->GainAuto = GainAuto_Continuous;
 				}
 				else
 				{
 					m_cam_ptr->Gain.SetValue(m_cam_settings.gain);
 				}
+				// setup gamma
 				if(m_cam_settings.enable_gamma)
 				{
 					m_cam_ptr->GammaEnable = true;
@@ -172,6 +164,26 @@ class blackfly_camera
 				{
 					m_cam_ptr->GammaEnable = false;
 				}
+				// setup trigger parameters
+				if(m_cam_settings.is_triggered)
+				{
+					m_cam_ptr->TriggerMode = TriggerMode_Off;
+					m_cam_ptr->TriggerSource = TriggerSource_Line0;
+					// m_cam_ptr->TriggerSource = TriggerSource_Line1;
+					// m_cam_ptr->TriggerSource = TriggerSource_Line2;
+					// m_cam_ptr->TriggerSource = TriggerSource_Line2;
+					m_cam_ptr->TriggerSource = TriggerSource_Counter0End;
+					m_cam_ptr->TriggerActivation = TriggerActivation_RisingEdge;
+					m_cam_ptr->TriggerMode = TriggerMode_On;
+					// m_cam_ptr->Counter = ;
+				}
+				else
+				{
+					m_cam_ptr->TriggerMode = TriggerMode_Off;
+					m_cam_ptr->AcquisitionFrameRateEnable = true;
+					m_cam_ptr->AcquisitionFrameRate = m_cam_settings.fps;
+				}
+				m_cam_ptr->ExposureMode = ExposureMode_Timed;
 			}
 			catch (Spinnaker::Exception & ex)
 			{
@@ -181,7 +193,6 @@ class blackfly_camera
 			}
 		}
 	private:
-		
 		CameraPtr m_cam_ptr;
 		camera_settings m_cam_settings;
 		ImageEventHandler *m_image_event_handler_ptr;
