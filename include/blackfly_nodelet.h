@@ -5,7 +5,6 @@
 #include <string>
 #include <time.h>
 
-#include <flycapture/FlyCapture2.h>
 #include <ros/ros.h>
 
 #include <sensor_msgs/Image.h>
