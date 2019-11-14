@@ -11,3 +11,22 @@ This driver is untested and not field proven. Use at your own risk.
 ## Notes:
 1. Camera Frame rate may drop if the camera is not connected to a USB3.0 port. 
 2. If using auto exposure, auto gain, and gamma correction, the camera tends to choose the maximum exposure value.
+3. Double Check:
+
+In /etc/default/grub, change 
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"  
+```
+to 
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash usbcore.usbfs_memory_mb=32768"  
+```
+then 
+```
+sudo update-grub  
+```
+then restart and verify that 
+```
+cat /sys/module/usbcore/parameters/usbfs_memory_mb  
+```
+is 32768 or something like that
