@@ -1,13 +1,25 @@
 <launch>
 
+  <arg name="with_imu" default="true" />
+  <group if="$(arg with_imu)">
+    <node pkg="nodelet" type="nodelet" name="vn100_nodelet" args="load vn100/vn100_nodelet nodelet_manager" output="screen">
+      <param name="com_port_name" type="string" value="/dev/ttyUSB0" />
+      <rosparam param="enu_axes_order">[0, 1, 2]</rosparam>
+      <rosparam param="enu_axes_fix">[1, 1, 1]</rosparam>
+      <param name="time_to_start_s" value="0" />
+      <!-- # [sec] to delay publishing -->
+    </node>
+
+  </group>
+
   <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen" />
 
-  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen">
+  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen" >
     <!-- Serial Numbers of Cameras -->
     <!-- Left , Center, Right -->
     <rosparam param="camera_serial_nums">["19194638", "19194639", "19194620"]</rosparam>
     <!-- Names of Cameras (used for topic names, etc) -->
-    <rosparam param="camera_names">["cam1", "cam2", "cam3"]</rosparam>
+    <rosparam param="camera_names">["left", "center", "right"]</rosparam>
     <!-- Paths to Camera info files -->
     <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_1.info", "", ""]</rosparam>
 
@@ -16,7 +28,7 @@
     <!-- Is the camera triggered? True = Line0, False = FrameRate -->
     <rosparam param="is_triggered_flags">[false, false, false]</rosparam>
     <!-- Frame Rate if not triggered-->
-    <rosparam param="fps">[30.0, 30.0, 30.0]</rosparam>
+    <rosparam param="fps">[20.0, 20.0, 20.0]</rosparam>
 
     <!-- Use Auto Exposure flag -->
     <rosparam param="is_auto_exp_flags">[true, true, true]</rosparam>

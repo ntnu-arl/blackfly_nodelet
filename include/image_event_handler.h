@@ -54,7 +54,7 @@ class ImageEventHandler : public ImageEvent
 			{
 				image_stamp = last_event_stamp;
 			}
-			ROS_INFO("Time Diff b/w arrival time and stamp = %f mSec",  (image_arrival_time.toSec() - image_stamp.toSec()) * 1000.0);
+			// ROS_INFO("Time Diff b/w arrival time and stamp = %f mSec",  (image_arrival_time.toSec() - image_stamp.toSec()) * 1000.0);
 			if (image->IsIncomplete())
 			{
 				ROS_ERROR("Blackfly nodelet : Image retrieval failed : image incomplete");

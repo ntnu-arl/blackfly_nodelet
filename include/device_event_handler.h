@@ -103,7 +103,7 @@ class DeviceEventHandler : public DeviceEvent
 				double exposure_time = double(m_cam_ptr->ExposureTime.GetValue());
 				// convert uSec to Sec
 				exposure_time /= 1000000.0;
-				ROS_INFO("GOT EXP TIME : %f", exposure_time);
+				// ROS_INFO("GOT EXP TIME : %f", exposure_time);
 				// get half the exposure time
 				exposure_time /= 2.0;
 				// subtract from the end of exposure time to get the middle of the exposure
