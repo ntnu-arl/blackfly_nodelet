@@ -50,6 +50,8 @@
     <rosparam param="enable_gamma">     [true, true, true]</rosparam>
     <!-- Gamma setting if using Gamma Correction -->
     <rosparam param="gammas">           [1.0, 1.0, 1.0]</rosparam>
+    <!-- Set Binning Parameter -->
+    <rosparam param="binnings">           [2, 2, 2]</rosparam>
 
   </node>
 </launch>
