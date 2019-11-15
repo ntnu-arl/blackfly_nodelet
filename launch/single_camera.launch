@@ -37,6 +37,8 @@
     <rosparam param="enable_gamma">     [true]</rosparam>
     <!-- Gamma setting if using Gamma Correction -->
     <rosparam param="gammas">           [1.0]</rosparam>
+    <!-- Binning Value (decimate image resolution by x) -->
+    <rosparam param="binnings">           [1]</rosparam>
 
   </node>
 </launch>

@@ -73,6 +73,9 @@ namespace blackfly
 		std::vector<float> gammas;
 		pnh.getParam("gammas", gammas);
 
+		std::vector<int> binnings;
+		pnh.getParam("binnings", binnings);
+
 		int num_cameras_listed = camera_names.size();
 		if(camera_serials.size() != num_cameras_listed || 
 			camera_info_paths.size() != num_cameras_listed || 
@@ -88,7 +91,8 @@ namespace blackfly
 			max_gains.size() != num_cameras_listed || 
 			min_gains.size() != num_cameras_listed || 
 			enable_gamma.size() != num_cameras_listed || 
-			gammas.size() != num_cameras_listed)
+			gammas.size() != num_cameras_listed ||
+			binnings.size() != num_cameras_listed )
 		{
 			ROS_FATAL("Camera settings don't match number of camera names");
 			ros::shutdown();
@@ -128,7 +132,7 @@ namespace blackfly
 			}
 			camera_settings settings(camera_names[i], camera_info_paths[i], mono_flags[i], 
 							is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
-							auto_gain_flags[i],gains[i], max_gains[i], min_gains[i],  enable_gamma[i], gammas[i]);
+							auto_gain_flags[i],gains[i], max_gains[i], min_gains[i],  enable_gamma[i], gammas[i], binnings[i]);
 
 			blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr, image_transport_ptr, &pnh);
 			m_cam_vect.push_back(blackfly_ptr);

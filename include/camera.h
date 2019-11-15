@@ -28,7 +28,7 @@ struct camera_settings
 	}
 	camera_settings(std::string cam_name_p, std::string cam_info_path_p, bool mono_p, bool is_triggered_p, float fps_p,
 					bool is_auto_exp_p, float max_exp_p, float min_exp_p, float fixed_exp_p,
-					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p, float gamma_p)
+					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p, float gamma_p, int binning_p)
 	{
 		cam_name = cam_name_p;
 		cam_info_path = cam_info_path_p;
@@ -45,6 +45,7 @@ struct camera_settings
 		min_gain = min_gain_p;
 		enable_gamma = enable_gamma_p;
 		gamma = gamma_p;
+		binning = binning_p;
 
 	}
 	std::string cam_name;
@@ -62,6 +63,7 @@ struct camera_settings
 	float max_gain;
 	bool enable_gamma;
 	float gamma;
+	int binning;
 };
 
 
@@ -126,7 +128,8 @@ class blackfly_camera
 				{
 					m_cam_ptr->PixelFormat = PixelFormat_BGR8;
 				}
-
+				m_cam_ptr->BinningVertical = m_cam_settings.binning;
+				m_cam_ptr->BinningHorizontal = m_cam_settings.binning;
 				// set acquisition mode, Continuous instead of single frame or burst modes
 				m_cam_ptr->AcquisitionMode = AcquisitionMode_Continuous;
 
