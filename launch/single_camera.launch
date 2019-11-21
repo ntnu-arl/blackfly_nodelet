@@ -21,7 +21,7 @@
     <rosparam param="is_auto_exp_flags">[true]</rosparam>
     <!-- Auto Exposure Bounds if using Auto Exposure (uSecs) -->
     <rosparam param="max_auto_exp">     [30000.0]</rosparam>
-    <rosparam param="min_auto_exp">     [500.0]</rosparam>
+    <rosparam param="min_auto_exp">     [50.0]</rosparam>
     <!-- Fixed Exposure if not Auto (uSecs) -->
     <rosparam param="fixed_exp">        [20000.0]</rosparam>
 

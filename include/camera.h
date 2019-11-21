@@ -19,7 +19,7 @@ struct camera_settings
 		fps = 20.0;
 		is_auto_exp = true;
 		max_auto_exp_time = 30000.0;
-		min_auto_exp_time = 500.0;
+		min_auto_exp_time = 50.0;
 		fixed_exp_time = 5000.0;
 		auto_gain = true;
 		gain = 1.0;
