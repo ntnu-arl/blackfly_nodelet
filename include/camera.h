@@ -175,7 +175,7 @@ class blackfly_camera
 					// m_cam_ptr->TriggerSource = TriggerSource_Line1;
 					// m_cam_ptr->TriggerSource = TriggerSource_Line2;
 					// m_cam_ptr->TriggerSource = TriggerSource_Line2;
-					m_cam_ptr->TriggerSource = TriggerSource_Counter0End;
+					// m_cam_ptr->TriggerSource = TriggerSource_Counter0End;
 					m_cam_ptr->TriggerActivation = TriggerActivation_RisingEdge;
 					m_cam_ptr->TriggerMode = TriggerMode_On;
 					// m_cam_ptr->Counter = ;
