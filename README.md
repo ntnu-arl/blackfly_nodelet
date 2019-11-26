@@ -30,3 +30,5 @@ then restart and verify that
 cat /sys/module/usbcore/parameters/usbfs_memory_mb  
 ```
 is 32768 or something like that
+
+4. It is recommended to use a 330 Ohm or lower value resistor to connect the OptoIn to the trigger signal.
