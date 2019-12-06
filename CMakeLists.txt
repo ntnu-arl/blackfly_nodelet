@@ -69,5 +69,7 @@ install(TARGETS ${PROJECT_NAME}_nodelet
   DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES nodelet_plugins.xml blackfly_nodelet.launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES nodelet_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(DIRECTORY launch
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
