@@ -33,7 +33,6 @@ class ImageEventHandler : public ImageEvent
 			m_c_info_mgr_ptr = p_c_info_mgr_ptr;
 			m_device_event_handler_ptr = p_device_event_handler_ptr;
 			m_last_image_stamp = ros::Time(0,0);
-			p_cam_ptr = nullptr;
 		}
 		~ImageEventHandler()
 		{
@@ -41,6 +40,7 @@ class ImageEventHandler : public ImageEvent
 		}
 		void OnImageEvent(ImagePtr image)
 		{
+			//ROS_INFO("FIRST IMAGE");
 			ros::Time image_arrival_time = ros::Time::now();
 			// get the last end of exposure envent from the device event handler (already exposure time compensated)
 			ros::Time last_event_stamp = m_device_event_handler_ptr->get_last_exposure_end();
@@ -49,6 +49,7 @@ class ImageEventHandler : public ImageEvent
 			if(last_event_stamp.toSec() == 0.0)
 			{
 				image_stamp = image_arrival_time;
+				ROS_WARN("BLACKFLY NODELET: NO EVENT STAMP");
 			}
 			else
 			{

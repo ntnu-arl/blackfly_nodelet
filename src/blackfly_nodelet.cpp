@@ -113,9 +113,13 @@ namespace blackfly
 		
 		for(int i = 0; i < camera_names.size(); i++)
 		{
+
+			ROS_DEBUG("Camera #%i", i);
 			CameraPtr cam_ptr;
 			try
 			{
+				ROS_DEBUG("Camera Serial : #%s", camera_serials[i].c_str());
+	
 				cam_ptr = camList.GetBySerial(camera_serials[i]);
 				if(!cam_ptr->IsValid())
 				{
@@ -124,6 +128,8 @@ namespace blackfly
 					system->ReleaseInstance();
 					ros::shutdown();
 				}
+
+				ROS_DEBUG("Camera Pointer Valid");
 			}
 			catch(const std::exception& e)
 			{
@@ -134,9 +140,13 @@ namespace blackfly
 							is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
 							auto_gain_flags[i],gains[i], max_gains[i], min_gains[i],  enable_gamma[i], gammas[i], binnings[i]);
 
+			ROS_DEBUG("Created Camera Settings Object");
+
 			blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr, image_transport_ptr, &pnh);
+			ROS_DEBUG("Created Camera Object");
 			m_cam_vect.push_back(blackfly_ptr);
-			ROS_INFO("Successfully launch camera : %s, Serial : %s", settings.cam_name.c_str(), camera_serials[i].c_str());
+			ROS_INFO("Successfully launched camera : %s, Serial : %s", settings.cam_name.c_str(), camera_serials[i].c_str());
 		}
+		ROS_INFO("Successfully launched all cameras.");
 	}
 } // end namespace blackfly

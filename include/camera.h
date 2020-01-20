@@ -80,22 +80,29 @@ class blackfly_camera
 			ros::NodeHandle nh(*pnh, settings.cam_name);
 
 			// setup ros image transport
+			ROS_DEBUG("Creating Camera Manager");
 			m_image_transport_ptr = image_transport_ptr;
 			m_cam_pub = image_transport_ptr->advertiseCamera(m_cam_settings.cam_name, 10);
 			m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
 			m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
 			// setup the camera
+			ROS_DEBUG("SETTING UP CAMERA");
 			setup_camera();
+			ROS_DEBUG("SET UP CAMERA");
 
 			// create event handlers
+			ROS_DEBUG("Creating Device Event Handler");
 			m_device_event_handler_ptr = new DeviceEventHandler(m_cam_ptr);
+			ROS_DEBUG("Creating Image Event Handler");
 			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr);
 		
+			ROS_DEBUG("Registering Event Handler");
 			// register event handlers
 			m_cam_ptr->RegisterEvent(*m_device_event_handler_ptr);
 			m_cam_ptr->RegisterEvent(*m_image_event_handler_ptr);
 
+			ROS_DEBUG("Begin Acquisition");
 			// must begin acquisition after registering the image event handler
 			m_cam_ptr->BeginAcquisition();
 		}
