@@ -80,7 +80,7 @@ class blackfly_camera
 			m_cam_settings = settings;
 
 			// create a new node handle 
-			ros::NodeHandle nh("~");
+			ros::NodeHandle nh(m_cam_settings.cam_name);
 
 			// setup ros image transport
 			ROS_DEBUG("Creating Camera Manager");
