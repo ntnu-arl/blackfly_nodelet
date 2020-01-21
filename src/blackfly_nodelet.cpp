@@ -16,14 +16,11 @@ namespace blackfly
 		// Release system
 		camList.Clear();
 		system->ReleaseInstance();	
-		delete image_transport_ptr;
 	}
 	void blackfly_nodelet::onInit()
 	{
 		ros::NodeHandle& nh = getMTNodeHandle();
 		ros::NodeHandle& pnh = getMTPrivateNodeHandle();
-
-		image_transport_ptr = new image_transport::ImageTransport(pnh);
 
 		std::vector<std::string> camera_serials;
 		pnh.getParam("camera_serial_nums", camera_serials);
@@ -142,7 +139,7 @@ namespace blackfly
 
 			ROS_DEBUG("Created Camera Settings Object");
 
-			blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr, image_transport_ptr, &pnh);
+			blackfly_camera *blackfly_ptr = new blackfly_camera(settings, cam_ptr);
 			ROS_DEBUG("Created Camera Object");
 			m_cam_vect.push_back(blackfly_ptr);
 			ROS_INFO("Successfully launched camera : %s, Serial : %s", settings.cam_name.c_str(), camera_serials[i].c_str());

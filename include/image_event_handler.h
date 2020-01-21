@@ -49,7 +49,7 @@ class ImageEventHandler : public ImageEvent
 			if(last_event_stamp.toSec() == 0.0)
 			{
 				image_stamp = image_arrival_time;
-				ROS_WARN("BLACKFLY NODELET: NO EVENT STAMP");
+				ROS_WARN("BLACKFLY NODELET: NO EVENT STAMP ON CAMERA: %s", m_cam_name.c_str());
 			}
 			else
 			{
