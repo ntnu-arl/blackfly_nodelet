@@ -48,7 +48,6 @@ namespace blackfly
 			virtual void onInit();
 		private:
 			void enable_chunk_data(INodeMap &cam_node_map);
-			image_transport::ImageTransport* image_transport_ptr;
 			boost::shared_ptr<camera_info_manager::CameraInfoManager>c_info_mgr_ptr;
 			int numCameras;
 			SystemPtr system;

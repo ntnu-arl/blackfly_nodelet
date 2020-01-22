@@ -5,6 +5,9 @@
 #include "Spinnaker.h"
 #include "image_event_handler.h"
 #include "device_event_handler.h"
+#include <sensor_msgs/image_encodings.h>
+#include <image_transport/image_transport.h>
+#include <camera_info_manager/camera_info_manager.h>
 
 using namespace Spinnaker;
 
@@ -70,19 +73,19 @@ struct camera_settings
 class blackfly_camera
 {
 	public:
-		blackfly_camera(camera_settings settings, CameraPtr cam_ptr, image_transport::ImageTransport* image_transport_ptr, ros::NodeHandle* pnh)
+		blackfly_camera(camera_settings settings, CameraPtr cam_ptr)
 		{
 			// save the camera pointer and the settings object
 			m_cam_ptr = cam_ptr;
 			m_cam_settings = settings;
 
 			// create a new node handle 
-			ros::NodeHandle nh(*pnh, settings.cam_name);
+			ros::NodeHandle nh(m_cam_settings.cam_name);
 
 			// setup ros image transport
 			ROS_DEBUG("Creating Camera Manager");
-			m_image_transport_ptr = image_transport_ptr;
-			m_cam_pub = image_transport_ptr->advertiseCamera(m_cam_settings.cam_name, 10);
+			m_image_transport_ptr = new image_transport::ImageTransport(nh);
+			m_cam_pub = m_image_transport_ptr->advertiseCamera(m_cam_settings.cam_name, 10);
 			m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
 			m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
