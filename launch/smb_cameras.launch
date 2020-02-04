@@ -39,5 +39,7 @@
     <rosparam param="gammas">           [1.0, 1.0, 1.0]</rosparam>
     <!-- Binning Value (decimate image resolution by x) -->
     <rosparam param="binnings">           [1,1,1]</rosparam>
+    <!-- Enable Exposure Time Compensation -->
+    <rosparam param="exp_comp_flags">           [true, true, true]</rosparam>
   </node>
 </launch>
