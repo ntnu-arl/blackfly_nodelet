@@ -26,7 +26,7 @@ class DeviceEventHandler : public DeviceEvent
 				CEnumerationPtr ptrEventSelector = node_map.GetNode("EventSelector");
 				if (!IsAvailable(ptrEventSelector) || !IsReadable(ptrEventSelector))
 				{
-					ROS_ERROR("Unable to retrieve event selector entries. Aborting");
+					ROS_ERROR("Blackfly Nodelet: Unable to retrieve event selector entries. Aborting");
 					return;
 				}
 				NodeList_t entries;
@@ -57,33 +57,11 @@ class DeviceEventHandler : public DeviceEvent
 						}
 						ptrEventNotification->SetIntValue(ptrEventNotificationOn->GetValue());
 					}
-					if(ptrEnumEntry->GetDisplayName() == "Exposure Start")
-					{
-						if (!IsAvailable(ptrEnumEntry) || !IsReadable(ptrEnumEntry))
-						{
-							// Skip if node fails
-							continue;
-						}
-						ptrEventSelector->SetIntValue(ptrEnumEntry->GetValue());
-						// Retrieve event notification node (an enumeration node)
-						CEnumerationPtr ptrEventNotification = node_map.GetNode("EventNotification");
-						if (!IsAvailable(ptrEventNotification) || !IsWritable(ptrEventNotification))
-						{
-							continue;
-						}
-						// Retrieve entry node to enable device event
-						CEnumEntryPtr ptrEventNotificationOn = ptrEventNotification->GetEntryByName("On");
-						if (!IsAvailable(ptrEventNotification) || !IsReadable(ptrEventNotification))
-						{
-							continue;
-						}
-						ptrEventNotification->SetIntValue(ptrEventNotificationOn->GetValue());
-					}
 				}
 			}
 			catch (Spinnaker::Exception &e)
 			{
-				ROS_FATAL("Failed to configure device event handler");
+				ROS_FATAL("Blackfly Nodelet: Failed to configure device event handler");
 			}
 		}
 		~DeviceEventHandler()
@@ -99,23 +77,12 @@ class DeviceEventHandler : public DeviceEvent
 				timestamp_mutex.lock();
 				// get the now time as the end of the exposure
 				m_last_frame_time = ros::Time::now();
-				// get exposure time from the camera (# uSec that shutter was open)
-				double exposure_time = double(m_cam_ptr->ExposureTime.GetValue());
-				// convert uSec to Sec
-				exposure_time /= 1000000.0;
-				// ROS_INFO("GOT EXP TIME : %f", exposure_time);
-				// get half the exposure time
-				exposure_time /= 2.0;
-				// subtract from the end of exposure time to get the middle of the exposure
-				m_last_frame_time -= ros::Duration(exposure_time);
 				// unlock the mutex 
 				timestamp_mutex.unlock();
 			}
-			
 		}
 		ros::Time get_last_exposure_end()
 		{
-		
 			if(m_last_frame_time.toSec() == 0.0)
 			{
 				return ros::Time(0,0);

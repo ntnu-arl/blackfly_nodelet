@@ -28,10 +28,12 @@ struct camera_settings
 		gain = 1.0;
 		enable_gamma = true;
 		gamma = 1.0;
+		exp_comp_flag = false;
 	}
 	camera_settings(std::string cam_name_p, std::string cam_info_path_p, bool mono_p, bool is_triggered_p, float fps_p,
 					bool is_auto_exp_p, float max_exp_p, float min_exp_p, float fixed_exp_p,
-					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p, float gamma_p, int binning_p)
+					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p, 
+					float gamma_p, int binning_p, bool exp_comp_flag_p)
 	{
 		cam_name = cam_name_p;
 		cam_info_path = cam_info_path_p;
@@ -49,6 +51,7 @@ struct camera_settings
 		enable_gamma = enable_gamma_p;
 		gamma = gamma_p;
 		binning = binning_p;
+		exp_comp_flag = exp_comp_flag_p;
 
 	}
 	std::string cam_name;
@@ -67,6 +70,7 @@ struct camera_settings
 	bool enable_gamma;
 	float gamma;
 	int binning;
+	bool exp_comp_flag;
 };
 
 
@@ -83,30 +87,22 @@ class blackfly_camera
 			ros::NodeHandle nh(m_cam_settings.cam_name);
 
 			// setup ros image transport
-			ROS_DEBUG("Creating Camera Manager");
 			m_image_transport_ptr = new image_transport::ImageTransport(nh);
 			m_cam_pub = m_image_transport_ptr->advertiseCamera(m_cam_settings.cam_name, 10);
 			m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
 			m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
 			// setup the camera
-			ROS_DEBUG("SETTING UP CAMERA");
 			setup_camera();
-			ROS_DEBUG("SET UP CAMERA");
 
 			// create event handlers
-			ROS_DEBUG("Creating Device Event Handler");
 			m_device_event_handler_ptr = new DeviceEventHandler(m_cam_ptr);
-			ROS_DEBUG("Creating Image Event Handler");
-			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr);
-		
-			ROS_DEBUG("Registering Event Handler");
+			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
+
 			// register event handlers
 			m_cam_ptr->RegisterEvent(*m_device_event_handler_ptr);
 			m_cam_ptr->RegisterEvent(*m_image_event_handler_ptr);
 
-			ROS_DEBUG("Begin Acquisition");
-			// must begin acquisition after registering the image event handler
 			m_cam_ptr->BeginAcquisition();
 		}
 		~blackfly_camera()
@@ -119,7 +115,46 @@ class blackfly_camera
 				delete m_image_event_handler_ptr;
 				delete m_device_event_handler_ptr;
 				m_cam_ptr->DeInit();
+				std::free(user_buffer);
 			}
+		}
+		// This function sets the internal buffersize of spinnaker -> By default it allocates memory based on the frame rate of the camera. 
+		// This may require very large memory when using multiple cameras, and may cause additional issues.
+		void set_buffer_size(unsigned int buff_size)
+		{
+			// Retrieve Stream Parameters device nodemap
+			Spinnaker::GenApi::INodeMap& sNodeMap = m_cam_ptr->GetTLStreamNodeMap();
+			// Retrieve Buffer Handling Mode Information
+			CEnumerationPtr ptrHandlingMode = sNodeMap.GetNode("StreamBufferHandlingMode");
+			if (!IsAvailable(ptrHandlingMode) || !IsWritable(ptrHandlingMode))
+			{
+				ROS_ERROR("Unable to set Buffer Handling mode (node retrieval). Aborting...");
+			}
+			CEnumEntryPtr ptrHandlingModeEntry = ptrHandlingMode->GetCurrentEntry();
+			if (!IsAvailable(ptrHandlingModeEntry) || !IsReadable(ptrHandlingModeEntry))
+			{
+				ROS_ERROR("Unable to set Buffer Handling mode (Entry retrieval). Aborting...");
+			}
+			// Set stream buffer Count Mode to manual
+			CEnumerationPtr ptrStreamBufferCountMode = sNodeMap.GetNode("StreamBufferCountMode");
+			if (!IsAvailable(ptrStreamBufferCountMode) || !IsWritable(ptrStreamBufferCountMode))
+			{
+				ROS_ERROR("Unable to set Buffer Count Mode (node retrieval). Aborting...");
+			}
+			CEnumEntryPtr ptrStreamBufferCountModeManual = ptrStreamBufferCountMode->GetEntryByName("Manual");
+			if (!IsAvailable(ptrStreamBufferCountModeManual) || !IsReadable(ptrStreamBufferCountModeManual))
+			{
+				ROS_ERROR("Unable to set Buffer Count Mode entry (Entry retrieval). Aborting...");
+			}
+			ptrStreamBufferCountMode->SetIntValue(ptrStreamBufferCountModeManual->GetValue());
+			// Retrieve and modify Stream Buffer Count
+			CIntegerPtr ptrBufferCount = sNodeMap.GetNode("StreamBufferCountManual");
+			if (!IsAvailable(ptrBufferCount) || !IsWritable(ptrBufferCount))
+			{
+				ROS_ERROR("Unable to set Buffer Count (Integer node retrieval). Aborting...");
+			}
+			// Display Buffer Info
+			ptrBufferCount->SetValue(buff_size);
 		}
 		void setup_camera()
 		{
@@ -127,8 +162,9 @@ class blackfly_camera
 			{
 				// initialize the camera
 				m_cam_ptr->Init();
-				// stop acquisition, must be stopped before any settings can be changed
+
 				m_cam_ptr->AcquisitionStop();
+
 				// Set up pixel format
 				if(m_cam_settings.mono)
 				{
@@ -197,6 +233,7 @@ class blackfly_camera
 					m_cam_ptr->AcquisitionFrameRate = m_cam_settings.fps;
 				}
 				m_cam_ptr->ExposureMode = ExposureMode_Timed;
+				set_buffer_size(5);
 			}
 			catch (Spinnaker::Exception & ex)
 			{
@@ -206,6 +243,9 @@ class blackfly_camera
 			}
 		}
 	private:
+		size_t total_size = sizeof(int8_t)*1024;
+        void *user_buffer = malloc(total_size);
+		// void* buffer = nullptr; 
 		CameraPtr m_cam_ptr;
 		camera_settings m_cam_settings;
 		ImageEventHandler *m_image_event_handler_ptr;

@@ -52,6 +52,8 @@
     <rosparam param="gammas">           [1.0, 1.0, 1.0]</rosparam>
     <!-- Set Binning Parameter -->
     <rosparam param="binnings">           [2, 2, 2]</rosparam>
+    <!-- Enable Exposure Time Compensation -->
+    <rosparam param="exp_comp_flags">           [true, true, true]</rosparam>
 
   </node>
 </launch>
