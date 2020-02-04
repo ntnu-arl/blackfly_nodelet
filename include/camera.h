@@ -98,10 +98,12 @@ class blackfly_camera
 			// create event handlers
 			m_device_event_handler_ptr = new DeviceEventHandler(m_cam_ptr);
 			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
-			
+
 			// register event handlers
 			m_cam_ptr->RegisterEvent(*m_device_event_handler_ptr);
 			m_cam_ptr->RegisterEvent(*m_image_event_handler_ptr);
+
+			m_cam_ptr->BeginAcquisition();
 		}
 		~blackfly_camera()
 		{
@@ -114,10 +116,6 @@ class blackfly_camera
 				delete m_device_event_handler_ptr;
 				m_cam_ptr->DeInit();
 				std::free(user_buffer);
-				// if(buffer != nullptr)
-				// {
-				// 	::operator delete(buffer);
-				// }
 			}
 		}
 		// This function sets the internal buffersize of spinnaker -> By default it allocates memory based on the frame rate of the camera. 
@@ -149,7 +147,6 @@ class blackfly_camera
 				ROS_ERROR("Unable to set Buffer Count Mode entry (Entry retrieval). Aborting...");
 			}
 			ptrStreamBufferCountMode->SetIntValue(ptrStreamBufferCountModeManual->GetValue());
-			// ROS_INFO("Stream Buffer Count Mode set to manual...");
 			// Retrieve and modify Stream Buffer Count
 			CIntegerPtr ptrBufferCount = sNodeMap.GetNode("StreamBufferCountManual");
 			if (!IsAvailable(ptrBufferCount) || !IsWritable(ptrBufferCount))
@@ -157,11 +154,7 @@ class blackfly_camera
 				ROS_ERROR("Unable to set Buffer Count (Integer node retrieval). Aborting...");
 			}
 			// Display Buffer Info
-			// ROS_INFO("Default Buffer Handling Mode: %s", ptrHandlingModeEntry->GetDisplayName().c_str());
-			// ROS_INFO("Default Buffer Count: %i", ptrBufferCount->GetValue());
-			// ROS_INFO("Maximum Buffer Count: %i", ptrBufferCount->GetMax());
 			ptrBufferCount->SetValue(buff_size);
-			// ROS_INFO("Buffer count now set to: %i", ptrBufferCount->GetValue());
 		}
 		void setup_camera()
 		{
