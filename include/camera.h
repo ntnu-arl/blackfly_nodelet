@@ -28,10 +28,12 @@ struct camera_settings
 		gain = 1.0;
 		enable_gamma = true;
 		gamma = 1.0;
+		exp_comp_flag = false;
 	}
 	camera_settings(std::string cam_name_p, std::string cam_info_path_p, bool mono_p, bool is_triggered_p, float fps_p,
 					bool is_auto_exp_p, float max_exp_p, float min_exp_p, float fixed_exp_p,
-					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p, float gamma_p, int binning_p)
+					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p, 
+					float gamma_p, int binning_p, bool exp_comp_flag_p)
 	{
 		cam_name = cam_name_p;
 		cam_info_path = cam_info_path_p;
@@ -49,6 +51,7 @@ struct camera_settings
 		enable_gamma = enable_gamma_p;
 		gamma = gamma_p;
 		binning = binning_p;
+		exp_comp_flag = exp_comp_flag_p;
 
 	}
 	std::string cam_name;
@@ -67,6 +70,7 @@ struct camera_settings
 	bool enable_gamma;
 	float gamma;
 	int binning;
+	bool exp_comp_flag;
 };
 
 
@@ -98,8 +102,7 @@ class blackfly_camera
 			ROS_DEBUG("Creating Device Event Handler");
 			m_device_event_handler_ptr = new DeviceEventHandler(m_cam_ptr);
 			ROS_DEBUG("Creating Image Event Handler");
-			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr);
-		
+			m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
 			ROS_DEBUG("Registering Event Handler");
 			// register event handlers
 			m_cam_ptr->RegisterEvent(*m_device_event_handler_ptr);
