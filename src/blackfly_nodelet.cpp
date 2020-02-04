@@ -102,7 +102,6 @@ namespace blackfly
 		system = System::GetInstance();
 		camList = system->GetCameras();
 		numCameras = camList.GetSize();
-
 		// Finish if there are no cameras
 		if (numCameras == 0)
 		{

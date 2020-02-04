@@ -36,6 +36,7 @@ class ImageEventHandler : public ImageEvent
 			m_device_event_handler_ptr = p_device_event_handler_ptr;
 			m_last_image_stamp = ros::Time(0,0);
 			m_exp_time_comp_flag = p_exp_time_comp_flag;
+			image_msg = boost::make_shared<sensor_msgs::Image>();
 			// config_all_chunk_data();
 		}
 		~ImageEventHandler()
@@ -44,7 +45,6 @@ class ImageEventHandler : public ImageEvent
 		}
 		void OnImageEvent(ImagePtr image)
 		{
-			//ROS_INFO("FIRST IMAGE");
 			ros::Time image_arrival_time = ros::Time::now();
 			// get the last end of exposure envent from the device event handler (exposure time compensated)
 			ros::Time last_event_stamp = m_device_event_handler_ptr->get_last_exposure_end();
@@ -78,14 +78,11 @@ class ImageEventHandler : public ImageEvent
 			}
 			if(m_cam_pub_ptr->getNumSubscribers() > 0)
 			{
-				sensor_msgs::ImagePtr image_msg = boost::make_shared<sensor_msgs::Image>();
 				int height = image->GetHeight();
 				int width = image->GetWidth();
 				int stride = image->GetStride();
 				int bits_per_px = image->GetBitsPerPixel();
-				//ROS_INFO("H : %i, W : %i, S : %i, B : %i", height, width, stride, bits_per_px);
 				PixelFormatEnums pix_format = image->GetPixelFormat();
-				//ROS_INFO("Pixel format : %s", image->GetPixelFormatName().c_str());
 				if(pix_format == PixelFormat_BGR8)
 				{
 					sensor_msgs::fillImage(*image_msg, sensor_msgs::image_encodings::BGR8, 
@@ -124,10 +121,6 @@ class ImageEventHandler : public ImageEvent
 			{
 				ROS_ERROR("Blackfly Nodelet: Unable to activate chunk mode. Timestamps not compensating for exp time");
 				return;
-			}
-			else
-			{
-				//ROS_INFO("Blackfly Nodelet: Chunk mode activated");
 			}
 			ptrChunkModeActive->SetValue(true);
 			// Retrieve the selector node
@@ -181,6 +174,7 @@ class ImageEventHandler : public ImageEvent
 		}
 		CameraPtr m_cam_ptr;
 	private:
+		sensor_msgs::ImagePtr image_msg;
 		DeviceEventHandler* m_device_event_handler_ptr;
 		boost::shared_ptr<camera_info_manager::CameraInfoManager> m_c_info_mgr_ptr;
 		image_transport::CameraPublisher *m_cam_pub_ptr;

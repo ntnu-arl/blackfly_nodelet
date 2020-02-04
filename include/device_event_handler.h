@@ -77,24 +77,12 @@ class DeviceEventHandler : public DeviceEvent
 				timestamp_mutex.lock();
 				// get the now time as the end of the exposure
 				m_last_frame_time = ros::Time::now();
-				// // get exposure time from the camera (# uSec that shutter was open)
-				// double exposure_time = double(m_cam_ptr->ExposureTime.GetValue());
-				// m_cam_ptr->
-				// // convert uSec to Sec
-				// exposure_time /= 1000000.0;
-				// // ROS_INFO("GOT EXP TIME : %f", exposure_time);
-				// // get half the exposure time
-				// exposure_time /= 2.0;
-				// // subtract from the end of exposure time to get the middle of the exposure
-				// m_last_frame_time -= ros::Duration(exposure_time);
 				// unlock the mutex 
 				timestamp_mutex.unlock();
 			}
-			
 		}
 		ros::Time get_last_exposure_end()
 		{
-		
 			if(m_last_frame_time.toSec() == 0.0)
 			{
 				return ros::Time(0,0);
