@@ -73,6 +73,9 @@ void blackfly_nodelet::onInit()
 	std::vector<int> binnings;
 	pnh.getParam("binnings", binnings);
 
+	std::vector<int> binning_mode;
+	pnh.getParam("binning_mode", binning_mode);
+
 	std::vector<bool> exp_comp_flags;
 	pnh.getParam("exp_comp_flags", exp_comp_flags);
 
@@ -97,6 +100,7 @@ void blackfly_nodelet::onInit()
 		enable_gamma.size() != num_cameras_listed ||
 		gammas.size() != num_cameras_listed ||
 		binnings.size() != num_cameras_listed ||
+		binning_mode.size() != num_cameras_listed ||
 		exp_comp_flags.size() != num_cameras_listed)
 	{
 		ROS_FATAL("Camera settings don't match number of camera names");
@@ -142,7 +146,7 @@ void blackfly_nodelet::onInit()
 		}
 		camera_settings settings(camera_names[i], camera_info_paths[i], mono_flags[i],
 								 is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
-								 auto_gain_flags[i], gains[i], max_gains[i], min_gains[i], enable_gamma[i], gammas[i], binnings[i], exp_comp_flags[i]);
+								 auto_gain_flags[i], gains[i], max_gains[i], min_gains[i], enable_gamma[i], gammas[i], binnings[i], binning_mode[i], exp_comp_flags[i]);
 
 		ROS_DEBUG("Created Camera Settings Object");
 
@@ -174,17 +178,17 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig &config, uin
 	if (config.acquisition_stop)
 	{
 		std::cout << "stop trigger" << std::endl;
-		camList[config.cam_id]->Init();
 		camList[config.cam_id]->AcquisitionStop();
-		camList[config.cam_id]->BinningHorizontalMode.SetNumEnums(config.h_binning_mode);
-		camList[config.cam_id]->BinningVerticalMode.SetNumEnums(config.v_binning_mode);
-		// camList[config.cam_id]->BinningHorizontal = config.binning;
-		// camList[config.cam_id]->BinningVertical = config.binning;
-
+		// camList[config.cam_id]->EndAcquisition();
+		camList[config.cam_id]->BinningHorizontal = config.binning;
+		camList[config.cam_id]->BinningVertical = config.binning;
+		// camList[config.cam_id]->BinningHorizontalMode.SetNumEnums(config.h_binning_mode);
+		// camList[config.cam_id]->BinningVerticalMode.SetNumEnums(config.v_binning_mode);
 	}
 	if (config.acquisition_start)
 	{
 		std::cout << "start trigger" << std::endl;
+		camList[config.cam_id]->Init();
 		camList[config.cam_id]->AcquisitionStart();
 	}
 	// camList[config.cam_id_to_change]->ExposureAuto. = config.exposure_auto;
