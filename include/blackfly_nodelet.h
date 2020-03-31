@@ -32,6 +32,9 @@
 #include "image_event_handler.h"
 #include "device_event_handler.h"
 
+#include <dynamic_reconfigure/server.h>
+#include <blackfly/BlackFlyConfig.h>
+
 #include "camera.h"
 
 using namespace Spinnaker;
@@ -40,19 +43,28 @@ using namespace Spinnaker::GenICam;
 
 namespace blackfly
 {
-	class blackfly_nodelet : public nodelet::Nodelet
-	{
-		public:
-			blackfly_nodelet() : Nodelet(){}
-			~blackfly_nodelet();
-			virtual void onInit();
-		private:
-			void enable_chunk_data(INodeMap &cam_node_map);
-			boost::shared_ptr<camera_info_manager::CameraInfoManager>c_info_mgr_ptr;
-			int numCameras;
-			SystemPtr system;
-			CameraList camList;
-			std::vector<blackfly_camera*> m_cam_vect;
-	};
-}
+
+class blackfly_nodelet : public nodelet::Nodelet
+{
+public:
+	blackfly_nodelet() : Nodelet() {}
+	~blackfly_nodelet();
+	virtual void onInit();
+
+	void callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level);
+	// void callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level, const int idx);
+
+private:
+	void enable_chunk_data(INodeMap &cam_node_map);
+	boost::shared_ptr<camera_info_manager::CameraInfoManager> c_info_mgr_ptr;
+	int numCameras;
+	SystemPtr system;
+	CameraList camList;
+	std::vector<blackfly_camera *> m_cam_vect;
+
+	// dynamic reconfigure
+	dynamic_reconfigure::Server<blackfly::BlackFlyConfig> *dr_srv;
+	dynamic_reconfigure::Server<blackfly::BlackFlyConfig>::CallbackType dyn_rec_cb;
+};
+} // namespace blackfly
 #endif // BLACKFLYNODELET_
