@@ -50,9 +50,7 @@ public:
 	blackfly_nodelet() : Nodelet() {}
 	~blackfly_nodelet();
 	virtual void onInit();
-
 	void callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level);
-	// void callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level, const int idx);
 
 private:
 	void enable_chunk_data(INodeMap &cam_node_map);
@@ -61,7 +59,6 @@ private:
 	SystemPtr system;
 	CameraList camList;
 	std::vector<blackfly_camera *> m_cam_vect;
-
 	// dynamic reconfigure
 	dynamic_reconfigure::Server<blackfly::BlackFlyConfig> *dr_srv;
 	dynamic_reconfigure::Server<blackfly::BlackFlyConfig>::CallbackType dyn_rec_cb;

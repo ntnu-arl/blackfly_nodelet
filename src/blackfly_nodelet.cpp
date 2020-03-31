@@ -76,6 +76,10 @@ void blackfly_nodelet::onInit()
 	std::vector<bool> exp_comp_flags;
 	pnh.getParam("exp_comp_flags", exp_comp_flags);
 
+	// enable dynamic reconfigure
+	bool enable_dyn_reconf;
+	pnh.getParam("enable_dyn_reconf", enable_dyn_reconf);
+
 	int num_cameras_listed = camera_names.size();
 	if (camera_serials.size() != num_cameras_listed ||
 		camera_info_paths.size() != num_cameras_listed ||
@@ -147,24 +151,47 @@ void blackfly_nodelet::onInit()
 		m_cam_vect.push_back(blackfly_ptr);
 		ROS_INFO("Successfully launched camera : %s, Serial : %s", settings.cam_name.c_str(), camera_serials[i].c_str());
 	}
-	dr_srv = new dynamic_reconfigure::Server<blackfly::BlackFlyConfig>(pnh);
-	dyn_rec_cb = boost::bind(&blackfly_nodelet::callback_dyn_reconf, this, _1, _2);
-	dr_srv->setCallback(dyn_rec_cb);
 
+	if (enable_dyn_reconf)
+	{
+		ROS_WARN_ONCE("Dynamic Reconfigure Triggered");
+		dr_srv = new dynamic_reconfigure::Server<blackfly::BlackFlyConfig>(pnh);
+		dyn_rec_cb = boost::bind(&blackfly_nodelet::callback_dyn_reconf, this, _1, _2);
+		dr_srv->setCallback(dyn_rec_cb);
+	}
 	ROS_INFO("Successfully launched all cameras.");
 }
 
 void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level)
 {
-	ROS_INFO_STREAM("Dynamic Reconfigure Triggered");
+	// ROS_INFO_STREAM("Dynamic Reconfigure Triggered");
+	// fps
+	camList[config.cam_id]->AcquisitionFrameRate = config.fps;
+	// gamma
+	camList[config.cam_id]->GammaEnable = config.enable_gamma;
+	camList[config.cam_id]->Gamma.SetValue(config.gamma);
 
-	std::cout << "Target fps value : " << config.fps << std::endl;
-	for (int i = numCameras - 1; i >= 0; i--)
+	if (config.acquisition_stop)
 	{
-		camList[i]->AcquisitionFrameRate = config.fps;
-		// camList[i]->GammaEnable.SetValue(config.enable_gamma);
-		// camList[i]->Width.SetValue(config.width);
+		std::cout << "stop trigger" << std::endl;
+		camList[config.cam_id]->Init();
+		camList[config.cam_id]->AcquisitionStop();
+		camList[config.cam_id]->BinningHorizontalMode.SetNumEnums(config.h_binning_mode);
+		camList[config.cam_id]->BinningVerticalMode.SetNumEnums(config.v_binning_mode);
+		// camList[config.cam_id]->BinningHorizontal = config.binning;
+		// camList[config.cam_id]->BinningVertical = config.binning;
+
 	}
+	if (config.acquisition_start)
+	{
+		std::cout << "start trigger" << std::endl;
+		camList[config.cam_id]->AcquisitionStart();
+	}
+	// camList[config.cam_id_to_change]->ExposureAuto. = config.exposure_auto;
+	// camList[config.cam_id]->Acquisition.SetNumEnums(config.exposure_auto);
+	// camList[config.cam_id_to_change]->ExposureMode
+	// m_cam_ptr->ExposureAuto = ExposureAuto_Off;
+	// m_cam_ptr->ExposureTime = m_cam_settings.fixed_exp_time;
 }
 
 } // end namespace blackfly
