@@ -174,21 +174,29 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig &config, uin
 	// gamma
 	camList[config.cam_id]->GammaEnable = config.enable_gamma;
 	camList[config.cam_id]->Gamma.SetValue(config.gamma);
-
 	if (config.acquisition_stop)
 	{
 		std::cout << "stop trigger" << std::endl;
 		camList[config.cam_id]->AcquisitionStop();
-		// camList[config.cam_id]->EndAcquisition();
-		camList[config.cam_id]->BinningHorizontal = config.binning;
-		camList[config.cam_id]->BinningVertical = config.binning;
-		// camList[config.cam_id]->BinningHorizontalMode.SetNumEnums(config.h_binning_mode);
+		ros::Duration(2.0).sleep();
+
+		if (config.binning_mode == 0)
+		{
+			camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Average);
+			camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Average);
+		}
+		else if (config.binning_mode == 1)
+		{
+			camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
+			camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Sum);
+		}
+		// camList[config.cam_id]->BinningHorizontal = config.binning;
+		// camList[config.cam_id]->BinningVertical = config.binning;
 		// camList[config.cam_id]->BinningVerticalMode.SetNumEnums(config.v_binning_mode);
 	}
 	if (config.acquisition_start)
 	{
 		std::cout << "start trigger" << std::endl;
-		camList[config.cam_id]->Init();
 		camList[config.cam_id]->AcquisitionStart();
 	}
 	// camList[config.cam_id_to_change]->ExposureAuto. = config.exposure_auto;

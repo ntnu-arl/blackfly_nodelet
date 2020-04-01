@@ -40,12 +40,12 @@
     <!-- Binning Value (decimate image resolution by x) -->
     <rosparam param="binnings">           [2]</rosparam>
     <!-- 0 Average / 1 Sum -->
-    <rosparam param="binning_mode">           [1]</rosparam>
+    <rosparam param="binning_mode">       [1]</rosparam>
     <!-- Enable Exposure Time Compensation -->
-    <rosparam param="exp_comp_flags">           [false]</rosparam>
+    <rosparam param="exp_comp_flags">     [false]</rosparam>
 
     <!-- Enable Dynamic Reconfigure -->
-    <param name="enable_dyn_reconf" value="false" type="bool"/>
+    <param name="enable_dyn_reconf" value="true" type="bool"/>
 
 
   </node>
