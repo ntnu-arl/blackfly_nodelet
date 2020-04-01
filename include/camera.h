@@ -176,7 +176,7 @@ public:
 			}
 			m_cam_ptr->BinningVertical = m_cam_settings.binning;
 			m_cam_ptr->BinningHorizontal = m_cam_settings.binning;
-
+			// set binning type 0=Average, 1=Sum	
 			if (m_cam_settings.binning_mode == 0)
 			{
 				m_cam_ptr->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Average);

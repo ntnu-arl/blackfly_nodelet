@@ -168,42 +168,68 @@ void blackfly_nodelet::onInit()
 
 void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level)
 {
-	// ROS_INFO_STREAM("Dynamic Reconfigure Triggered");
+	std::cout << "Dynamic Reconfigure triggered" << std::endl;
+
 	// fps
 	camList[config.cam_id]->AcquisitionFrameRate = config.fps;
 	// gamma
 	camList[config.cam_id]->GammaEnable = config.enable_gamma;
 	camList[config.cam_id]->Gamma.SetValue(config.gamma);
+
+	switch (config.exposure_auto)
+	{
+	case 0:
+		camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Off);
+		camList[config.cam_id]->ExposureTime = config.exposure_time;
+		break;
+	case 1:
+		camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Once);
+		break;
+	default:
+		camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Continuous);
+		break;
+	}
+	switch (config.gain_auto)
+	{
+	case 0:
+		camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Off);
+		camList[config.cam_id]->Gain = config.gain;
+		break;
+	case 1:
+		camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Once);
+		break;
+	default:
+		camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Continuous);
+		break;
+	}
+
 	if (config.acquisition_stop)
 	{
 		std::cout << "stop trigger" << std::endl;
 		camList[config.cam_id]->AcquisitionStop();
-		ros::Duration(2.0).sleep();
+		camList[config.cam_id]->TLParamsLocked = 0;
+		camList[config.cam_id]->BinningHorizontal = config.binning;
+		camList[config.cam_id]->BinningVertical = config.binning;
 
-		if (config.binning_mode == 0)
+		switch (config.binning_mode)
 		{
+		case 0:
 			camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Average);
 			camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Average);
-		}
-		else if (config.binning_mode == 1)
-		{
+			break;
+
+		default:
 			camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
 			camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Sum);
+			break;
 		}
-		// camList[config.cam_id]->BinningHorizontal = config.binning;
-		// camList[config.cam_id]->BinningVertical = config.binning;
-		// camList[config.cam_id]->BinningVerticalMode.SetNumEnums(config.v_binning_mode);
 	}
 	if (config.acquisition_start)
 	{
 		std::cout << "start trigger" << std::endl;
+		camList[config.cam_id]->TLParamsLocked = 1;
 		camList[config.cam_id]->AcquisitionStart();
 	}
-	// camList[config.cam_id_to_change]->ExposureAuto. = config.exposure_auto;
-	// camList[config.cam_id]->Acquisition.SetNumEnums(config.exposure_auto);
-	// camList[config.cam_id_to_change]->ExposureMode
-	// m_cam_ptr->ExposureAuto = ExposureAuto_Off;
-	// m_cam_ptr->ExposureTime = m_cam_settings.fixed_exp_time;
 }
 
 } // end namespace blackfly
