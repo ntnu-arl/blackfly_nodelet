@@ -85,23 +85,23 @@ void blackfly_nodelet::onInit()
 
 	int num_cameras_listed = camera_names.size();
 	if (camera_serials.size() != num_cameras_listed ||
-		camera_info_paths.size() != num_cameras_listed ||
-		mono_flags.size() != num_cameras_listed ||
-		is_triggered_flags.size() != num_cameras_listed ||
-		fps.size() != num_cameras_listed ||
-		is_auto_exp_flags.size() != num_cameras_listed ||
-		max_auto_exp.size() != num_cameras_listed ||
-		min_auto_exp.size() != num_cameras_listed ||
-		fixed_exp.size() != num_cameras_listed ||
-		auto_gain_flags.size() != num_cameras_listed ||
-		gains.size() != num_cameras_listed ||
-		max_gains.size() != num_cameras_listed ||
-		min_gains.size() != num_cameras_listed ||
-		enable_gamma.size() != num_cameras_listed ||
-		gammas.size() != num_cameras_listed ||
-		binnings.size() != num_cameras_listed ||
-		binning_mode.size() != num_cameras_listed ||
-		exp_comp_flags.size() != num_cameras_listed)
+			camera_info_paths.size() != num_cameras_listed ||
+			mono_flags.size() != num_cameras_listed ||
+			is_triggered_flags.size() != num_cameras_listed ||
+			fps.size() != num_cameras_listed ||
+			is_auto_exp_flags.size() != num_cameras_listed ||
+			max_auto_exp.size() != num_cameras_listed ||
+			min_auto_exp.size() != num_cameras_listed ||
+			fixed_exp.size() != num_cameras_listed ||
+			auto_gain_flags.size() != num_cameras_listed ||
+			gains.size() != num_cameras_listed ||
+			max_gains.size() != num_cameras_listed ||
+			min_gains.size() != num_cameras_listed ||
+			enable_gamma.size() != num_cameras_listed ||
+			gammas.size() != num_cameras_listed ||
+			binnings.size() != num_cameras_listed ||
+			binning_mode.size() != num_cameras_listed ||
+			exp_comp_flags.size() != num_cameras_listed)
 	{
 		ROS_FATAL("Camera settings don't match number of camera names");
 		ros::shutdown();
@@ -145,8 +145,8 @@ void blackfly_nodelet::onInit()
 			ros::shutdown();
 		}
 		camera_settings settings(camera_names[i], camera_info_paths[i], mono_flags[i],
-								 is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
-								 auto_gain_flags[i], gains[i], max_gains[i], min_gains[i], enable_gamma[i], gammas[i], binnings[i], binning_mode[i], exp_comp_flags[i]);
+														 is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
+														 auto_gain_flags[i], gains[i], max_gains[i], min_gains[i], enable_gamma[i], gammas[i], binnings[i], binning_mode[i], exp_comp_flags[i]);
 
 		ROS_DEBUG("Created Camera Settings Object");
 
@@ -158,7 +158,7 @@ void blackfly_nodelet::onInit()
 
 	if (enable_dyn_reconf)
 	{
-		ROS_WARN_ONCE("Dynamic Reconfigure Triggered");
+		ROS_WARN_ONCE("BlackFly Dynamic Reconfigure Triggered");
 		dr_srv = new dynamic_reconfigure::Server<blackfly::BlackFlyConfig>(pnh);
 		dyn_rec_cb = boost::bind(&blackfly_nodelet::callback_dyn_reconf, this, _1, _2);
 		dr_srv->setCallback(dyn_rec_cb);
@@ -168,68 +168,70 @@ void blackfly_nodelet::onInit()
 
 void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level)
 {
-	std::cout << "Dynamic Reconfigure triggered" << std::endl;
-
-	// fps
-	camList[config.cam_id]->AcquisitionFrameRate = config.fps;
-	// gamma
-	camList[config.cam_id]->GammaEnable = config.enable_gamma;
-	camList[config.cam_id]->Gamma.SetValue(config.gamma);
-
-	switch (config.exposure_auto)
+	if (!first_callback)
 	{
-	case 0:
-		camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Off);
-		camList[config.cam_id]->ExposureTime = config.exposure_time;
-		break;
-	case 1:
-		camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Once);
-		break;
-	default:
-		camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Continuous);
-		break;
-	}
-	switch (config.gain_auto)
-	{
-	case 0:
-		camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Off);
-		camList[config.cam_id]->Gain = config.gain;
-		break;
-	case 1:
-		camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Once);
-		break;
-	default:
-		camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Continuous);
-		break;
-	}
+		// Ignore the first call back in beginning
+		// fps
+		camList[config.cam_id]->AcquisitionFrameRate = config.fps;
+		// gamma
+		camList[config.cam_id]->GammaEnable = config.enable_gamma;
+		camList[config.cam_id]->Gamma.SetValue(config.gamma);
 
-	if (config.acquisition_stop)
-	{
-		std::cout << "stop trigger" << std::endl;
-		camList[config.cam_id]->AcquisitionStop();
-		camList[config.cam_id]->TLParamsLocked = 0;
-		camList[config.cam_id]->BinningHorizontal = config.binning;
-		camList[config.cam_id]->BinningVertical = config.binning;
-
-		switch (config.binning_mode)
+		switch (config.exposure_auto)
 		{
 		case 0:
-			camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Average);
-			camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Average);
+			camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Off);
+			camList[config.cam_id]->ExposureTime = config.exposure_time;
 			break;
-
+		case 1:
+			camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Once);
+			break;
 		default:
-			camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
-			camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Sum);
+			camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Continuous);
 			break;
 		}
+		switch (config.gain_auto)
+		{
+		case 0:
+			camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Off);
+			camList[config.cam_id]->Gain = config.gain;
+			break;
+		case 1:
+			camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Once);
+			break;
+		default:
+			camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Continuous);
+			break;
+		}
+		if (config.acquisition_stop)
+		{
+			std::cout << "acquisition Stop" << std::endl;
+			camList[config.cam_id]->AcquisitionStop();
+			camList[config.cam_id]->TLParamsLocked = 0;
+			camList[config.cam_id]->BinningHorizontal = config.binning;
+			camList[config.cam_id]->BinningVertical = config.binning;
+
+			switch (config.binning_mode)
+			{
+			case 0:
+				camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Average);
+				camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Average);
+				break;
+
+			default:
+				camList[config.cam_id]->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
+				camList[config.cam_id]->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Sum);
+				break;
+			}
+		}
+		if (config.acquisition_start)
+		{
+			std::cout << "acquisition Start" << std::endl;
+			camList[config.cam_id]->TLParamsLocked = 1;
+			camList[config.cam_id]->AcquisitionStart();
+		}
 	}
-	if (config.acquisition_start)
-	{
-		std::cout << "start trigger" << std::endl;
-		camList[config.cam_id]->TLParamsLocked = 1;
-		camList[config.cam_id]->AcquisitionStart();
-	}
+	first_callback = false;
 }
 
 } // end namespace blackfly
