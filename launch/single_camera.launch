@@ -2,16 +2,18 @@
 
   <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen" />
 
-  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen">
+  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet"
+  args="load blackfly/blackfly_nodelet nodelet_manager"  clear_params="true" output="screen">
+
     <!-- Serial Numbers of Cameras -->
-    <rosparam param="camera_serial_nums">["19292936"]</rosparam>
+    <rosparam param="camera_serial_nums">["18383942"]</rosparam>
     <!-- Names of Cameras (used for topic names, etc) -->
-    <rosparam param="camera_names">["cam1"]</rosparam>
+    <rosparam param="camera_names">["cam0"]</rosparam>
     <!-- Paths to Camera info files -->
     <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_1.info"]</rosparam>
 
     <!-- Publish Mono Images Flag : True = Mono8, False = BGR8 -->
-    <rosparam param="mono_flags">[true]</rosparam>
+    <rosparam param="mono_flags">[false]</rosparam>
     <!-- Is the camera triggered? True = Line0, False = FrameRate -->
     <rosparam param="is_triggered_flags">[false]</rosparam>
     <!-- Frame Rate if not triggered-->
@@ -39,14 +41,13 @@
     <rosparam param="gammas">           [1.0]</rosparam>
     <!-- Binning Value (decimate image resolution by x) -->
     <rosparam param="binnings">           [2]</rosparam>
+    <!-- <rosparam param="binnings">           [1]</rosparam> -->
     <!-- 0 Average / 1 Sum -->
     <rosparam param="binning_mode">       [1]</rosparam>
     <!-- Enable Exposure Time Compensation -->
     <rosparam param="exp_comp_flags">     [false]</rosparam>
 
     <!-- Enable Dynamic Reconfigure -->
-    <param name="enable_dyn_reconf" value="true" type="bool"/>
-
-
+    <rosparam param="enable_dyn_reconf">  true</rosparam>
   </node>
 </launch>
