@@ -38,7 +38,7 @@
     <!-- Gamma setting if using Gamma Correction -->
     <rosparam param="gammas">           [1.0, 1.0]</rosparam>
     <!-- Binning Value (decimate image resolution by x) -->
-    <rosparam param="binnings">           [2, 2]</rosparam>
+    <rosparam param="binnings">           [3, 3]</rosparam>
     <!-- 0 Average / 1 Sum -->
     <rosparam param="binning_mode">       [0, 1]</rosparam>
     <!-- Enable Exposure Time Compensation -->

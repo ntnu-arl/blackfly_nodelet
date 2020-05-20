@@ -4,7 +4,7 @@
 
   <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen">
     <!-- Serial Numbers of Cameras -->
-    <rosparam param="camera_serial_nums">["19292936"]</rosparam>
+    <rosparam param="camera_serial_nums">["19061688"]</rosparam>
     <!-- Names of Cameras (used for topic names, etc) -->
     <rosparam param="camera_names">["cam1"]</rosparam>
     <!-- Paths to Camera info files -->
@@ -41,6 +41,8 @@
     <rosparam param="binnings">           [2]</rosparam>
     <!-- 0 Average / 1 Sum -->
     <rosparam param="binning_mode">       [1]</rosparam>
+    <!-- 0 Normal / 1 backlight / 2 Frontlight -->
+    <rosparam param="lighting_mode">       [1]</rosparam>
     <!-- Enable Exposure Time Compensation -->
     <rosparam param="exp_comp_flags">     [false]</rosparam>
 

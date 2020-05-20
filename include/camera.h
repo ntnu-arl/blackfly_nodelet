@@ -33,7 +33,7 @@ struct camera_settings
 	camera_settings(std::string cam_name_p, std::string cam_info_path_p, bool mono_p, bool is_triggered_p, float fps_p,
 					bool is_auto_exp_p, float max_exp_p, float min_exp_p, float fixed_exp_p,
 					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p,
-					float gamma_p, int binning_p, int binning_mode_p, bool exp_comp_flag_p)
+					float gamma_p, int binning_p, int binning_mode_p, int lighting_mode_p, bool exp_comp_flag_p)
 	{
 		cam_name = cam_name_p;
 		cam_info_path = cam_info_path_p;
@@ -52,6 +52,7 @@ struct camera_settings
 		gamma = gamma_p;
 		binning = binning_p;
 		binning_mode = binning_mode_p;
+		lighting_mode = lighting_mode_p;
 		exp_comp_flag = exp_comp_flag_p;
 	}
 	std::string cam_name;
@@ -71,6 +72,7 @@ struct camera_settings
 	float gamma;
 	int binning;
 	int binning_mode;
+	int lighting_mode;
 	bool exp_comp_flag;
 };
 
@@ -176,7 +178,10 @@ public:
 			}
 			m_cam_ptr->BinningVertical = m_cam_settings.binning;
 			m_cam_ptr->BinningHorizontal = m_cam_settings.binning;
-			// set binning type 0=Average, 1=Sum	
+
+			m_cam_ptr->BinningHorizontal = m_cam_settings.binning;
+
+			// set binning type 0=Average, 1=Sum
 			if (m_cam_settings.binning_mode == 0)
 			{
 				m_cam_ptr->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Average);
@@ -187,6 +192,17 @@ public:
 				m_cam_ptr->BinningHorizontalMode.SetValue(BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
 				m_cam_ptr->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Sum);
 			}
+
+			// set lighting type 0=Normal, 1=Backlight, 2=Frontlight
+			if (m_cam_settings.lighting_mode == 1)
+			{
+				m_cam_ptr->AutoExposureLightingMode.SetValue(AutoExposureLightingModeEnums::AutoExposureLightingMode_Backlight);
+			}
+			else if (m_cam_settings.lighting_mode == 2)
+			{
+				m_cam_ptr->AutoExposureLightingMode.SetValue(AutoExposureLightingModeEnums::AutoExposureLightingMode_Frontlight);
+			}
+
 			// set acquisition mode, Continuous instead of single frame or burst modes
 			m_cam_ptr->AcquisitionMode = AcquisitionMode_Continuous;
 
