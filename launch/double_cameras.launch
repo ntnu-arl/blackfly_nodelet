@@ -38,14 +38,19 @@
     <!-- Gamma setting if using Gamma Correction -->
     <rosparam param="gammas">           [1.0, 1.0]</rosparam>
     <!-- Binning Value (decimate image resolution by x) -->
-    <rosparam param="binnings">           [3, 3]</rosparam>
+    <rosparam param="binnings">           [4, 4]</rosparam>
     <!-- 0 Average / 1 Sum -->
-    <rosparam param="binning_mode">       [0, 1]</rosparam>
+    <rosparam param="binning_mode">       [1, 1]</rosparam>
+    <!-- 0 Normal / 1 backlight / 2 Frontlight -->
+    <rosparam param="lighting_mode">     [0, 0]</rosparam>
+    <!-- 0 Gain / 1 ExposureTime -->
+    <rosparam param="auto_exposure_priority">       [0,0]</rosparam>
     <!-- Enable Exposure Time Compensation -->
     <rosparam param="exp_comp_flags">     [false, false]</rosparam>
 
+
     <!-- Enable Dynamic Reconfigure -->
-    <param name="enable_dyn_reconf" value="false" type="bool"/>
+    <param name="enable_dyn_reconf" value="false" type="bool" />
 
 
   </node>

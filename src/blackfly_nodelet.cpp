@@ -79,6 +79,9 @@ namespace blackfly
 		std::vector<int> lighting_mode;
 		pnh.getParam("lighting_mode", lighting_mode);
 
+		std::vector<int> auto_exposure_priority;
+		pnh.getParam("auto_exposure_priority", auto_exposure_priority);
+
 		std::vector<bool> exp_comp_flags;
 		pnh.getParam("exp_comp_flags", exp_comp_flags);
 
@@ -105,6 +108,7 @@ namespace blackfly
 			binnings.size() != num_cameras_listed ||
 			binning_mode.size() != num_cameras_listed ||
 			lighting_mode.size() != num_cameras_listed ||
+			auto_exposure_priority.size() != num_cameras_listed ||
 			exp_comp_flags.size() != num_cameras_listed)
 		{
 			ROS_FATAL("Camera settings don't match number of camera names");
@@ -151,7 +155,7 @@ namespace blackfly
 			camera_settings settings(camera_names[i], camera_info_paths[i], mono_flags[i],
 									 is_triggered_flags[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i],
 									 auto_gain_flags[i], gains[i], max_gains[i], min_gains[i], enable_gamma[i], gammas[i],
-									 binnings[i], binning_mode[i], lighting_mode[i], exp_comp_flags[i]);
+									 binnings[i], binning_mode[i], lighting_mode[i], auto_exposure_priority[i], exp_comp_flags[i]);
 
 			ROS_DEBUG("Created Camera Settings Object");
 
@@ -218,6 +222,15 @@ namespace blackfly
 			break;
 		default:
 			camList[config.cam_id]->AutoExposureLightingMode.SetValue(AutoExposureLightingModeEnums::AutoExposureLightingMode_Normal);
+			break;
+		}
+		switch (config.auto_exposure_priority)
+		{
+		case 1:
+			camList[config.cam_id]->AutoExposureControlPriority.SetValue(AutoExposureControlPriorityEnums::AutoExposureControlPriority_ExposureTime);
+			break;
+		default:
+			camList[config.cam_id]->AutoExposureControlPriority.SetValue(AutoExposureControlPriorityEnums::AutoExposureControlPriority_Gain);
 			break;
 		}
 

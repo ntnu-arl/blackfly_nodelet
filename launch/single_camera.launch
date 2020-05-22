@@ -42,7 +42,9 @@
     <!-- 0 Average / 1 Sum -->
     <rosparam param="binning_mode">       [1]</rosparam>
     <!-- 0 Normal / 1 backlight / 2 Frontlight -->
-    <rosparam param="lighting_mode">       [1]</rosparam>
+    <rosparam param="lighting_mode">       [0]</rosparam>
+    <!-- 0 Gain / 1 ExposureTime -->
+    <rosparam param="auto_exposure_priority">       [0]</rosparam>
     <!-- Enable Exposure Time Compensation -->
     <rosparam param="exp_comp_flags">     [false]</rosparam>
 

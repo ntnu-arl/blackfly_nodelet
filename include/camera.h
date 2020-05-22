@@ -33,7 +33,7 @@ struct camera_settings
 	camera_settings(std::string cam_name_p, std::string cam_info_path_p, bool mono_p, bool is_triggered_p, float fps_p,
 					bool is_auto_exp_p, float max_exp_p, float min_exp_p, float fixed_exp_p,
 					bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p, bool enable_gamma_p,
-					float gamma_p, int binning_p, int binning_mode_p, int lighting_mode_p, bool exp_comp_flag_p)
+					float gamma_p, int binning_p, int binning_mode_p, int lighting_mode_p, int auto_exposure_priority_p, bool exp_comp_flag_p)
 	{
 		cam_name = cam_name_p;
 		cam_info_path = cam_info_path_p;
@@ -53,6 +53,7 @@ struct camera_settings
 		binning = binning_p;
 		binning_mode = binning_mode_p;
 		lighting_mode = lighting_mode_p;
+		auto_exposure_priority = auto_exposure_priority_p;
 		exp_comp_flag = exp_comp_flag_p;
 	}
 	std::string cam_name;
@@ -73,6 +74,7 @@ struct camera_settings
 	int binning;
 	int binning_mode;
 	int lighting_mode;
+	int auto_exposure_priority;
 	bool exp_comp_flag;
 };
 
