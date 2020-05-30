@@ -25,10 +25,18 @@ then
 ```
 sudo update-grub  
 ```
-then restart and verify that 
+then restart  and verify that 
 ```
 cat /sys/module/usbcore/parameters/usbfs_memory_mb  
 ```
-is 32768 or something like that
+is >= 1024
 
 4. It is recommended to use a 330 Ohm or lower value resistor to connect the OptoIn to the trigger signal.
+
+## Dynamic Reconfigure
+
+Set enable_dyn_reconf to "True" to change online the following parameters:
+
+
+
+
