@@ -14,14 +14,19 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   image_transport
   nodelet
+  dynamic_reconfigure
 ) 
 
 find_package(OpenCV REQUIRED)
 
+generate_dynamic_reconfigure_options(
+    cfg/BlackFly.cfg
+)
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}_nodelet
-  CATKIN_DEPENDS roscpp nodelet camera_info_manager sensor_msgs std_msgs cv_bridge image_transport 
+  CATKIN_DEPENDS roscpp nodelet camera_info_manager sensor_msgs std_msgs cv_bridge image_transport dynamic_reconfigure
   DEPENDS OpenCV
 )
 
