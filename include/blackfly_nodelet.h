@@ -47,7 +47,7 @@ namespace blackfly
 class blackfly_nodelet : public nodelet::Nodelet
 {
 public:
-	blackfly_nodelet() : Nodelet() {}
+	blackfly_nodelet() : first_callback(true), Nodelet() {}
 	~blackfly_nodelet();
 	virtual void onInit();
 	void callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level);
@@ -59,6 +59,7 @@ private:
 	SystemPtr system;
 	CameraList camList;
 	std::vector<blackfly_camera *> m_cam_vect;
+	bool first_callback;
 	// dynamic reconfigure
 	dynamic_reconfigure::Server<blackfly::BlackFlyConfig> *dr_srv;
 	dynamic_reconfigure::Server<blackfly::BlackFlyConfig>::CallbackType dyn_rec_cb;
