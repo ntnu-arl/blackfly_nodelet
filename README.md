@@ -37,6 +37,6 @@ is >= 1024
 
 Set enable_dyn_reconf to "True" to change online the following parameters:
 
-
+![Dynamic Reconfigure Parameters](https://github.com/unr-arl/blackfly_nodelet/blob/master/imgs/dyn_rec.png)
 
 
