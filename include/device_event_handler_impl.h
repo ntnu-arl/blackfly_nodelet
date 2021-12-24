@@ -1,5 +1,5 @@
-#ifndef DEV_EVENT_HANDLER_
-#define DEV_EVENT_HANDLER_
+#ifndef DEV_EVENT_HANDLER_IMPL_
+#define DEV_EVENT_HANDLER_IMPL_
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include <iostream>
@@ -12,10 +12,10 @@ using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 
-class DeviceEventHandler : public DeviceEvent
+class DeviceEventHandlerImpl : public DeviceEventHandler
 {
 	public:
-		DeviceEventHandler(CameraPtr cam_ptr)
+		DeviceEventHandlerImpl(CameraPtr cam_ptr)
 		{
 			// save the camera pointer
 			m_cam_ptr = cam_ptr;
@@ -40,19 +40,23 @@ class DeviceEventHandler : public DeviceEvent
 						if (!IsAvailable(ptrEnumEntry) || !IsReadable(ptrEnumEntry))
 						{
 							// Skip if node fails
+							ROS_WARN("Blackfly Nodelet: Exposure end event is unavailable or unreadable");
 							continue;
 						}
+						// The next line may be unnecessary - It seems to write the same value that was already available?
 						ptrEventSelector->SetIntValue(ptrEnumEntry->GetValue());
 						// Retrieve event notification node (an enumeration node)
 						CEnumerationPtr ptrEventNotification = node_map.GetNode("EventNotification");
 						if (!IsAvailable(ptrEventNotification) || !IsWritable(ptrEventNotification))
 						{
+							ROS_WARN("Blackfly Nodelet: Event Notification is unavailable or unwritable");
 							continue;
 						}
 						// Retrieve entry node to enable device event
 						CEnumEntryPtr ptrEventNotificationOn = ptrEventNotification->GetEntryByName("On");
 						if (!IsAvailable(ptrEventNotification) || !IsReadable(ptrEventNotification))
 						{
+							ROS_WARN("Blackfly Nodelet: Event Notification is unavailable or unreadable");
 							continue;
 						}
 						ptrEventNotification->SetIntValue(ptrEventNotificationOn->GetValue());
@@ -64,7 +68,7 @@ class DeviceEventHandler : public DeviceEvent
 				ROS_FATAL("Blackfly Nodelet: Failed to configure device event handler");
 			}
 		}
-		~DeviceEventHandler()
+		~DeviceEventHandlerImpl()
 		{
 			// this is how the spinnaker examples release the camera pointer and allow the nodelet to exit cleanly
 			m_cam_ptr = nullptr;
@@ -109,4 +113,4 @@ class DeviceEventHandler : public DeviceEvent
 		// Camera pointer to spinnaker camera object (used to get the current exposure time)
 		CameraPtr m_cam_ptr;
 };
-#endif // DEV_EVENT_HANDLER
+#endif // DEV_EVENT_HANDLER_IMPL_

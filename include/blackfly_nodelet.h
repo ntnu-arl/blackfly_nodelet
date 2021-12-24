@@ -29,8 +29,8 @@
 // Nodelet stuff
 #include <nodelet/nodelet.h>
 
-#include "image_event_handler.h"
-#include "device_event_handler.h"
+#include "image_event_handler_impl.h"
+#include "device_event_handler_impl.h"
 
 #include <dynamic_reconfigure/server.h>
 #include <blackfly/BlackFlyConfig.h>

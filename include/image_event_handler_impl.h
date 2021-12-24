@@ -1,5 +1,5 @@
-#ifndef IMG_EVENT_HANDLER_
-#define IMG_EVENT_HANDLER_
+#ifndef IMG_EVENT_HANDLER_IMPL_
+#define IMG_EVENT_HANDLER_IMPL_
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
@@ -16,18 +16,18 @@
 #include <ros/ros.h>
 #include <nodelet/nodelet.h>
 
-#include "device_event_handler.h"
+#include "device_event_handler_impl.h"
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
 using namespace Spinnaker::GenICam;
 
-class ImageEventHandler : public ImageEvent
+class ImageEventHandlerImpl : public ImageEventHandler
 {
 	public:
-		ImageEventHandler(std::string p_cam_name, CameraPtr p_cam_ptr, image_transport::CameraPublisher *p_cam_pub_ptr, 
+		ImageEventHandlerImpl(std::string p_cam_name, CameraPtr p_cam_ptr, image_transport::CameraPublisher *p_cam_pub_ptr, 
 							boost::shared_ptr<camera_info_manager::CameraInfoManager> p_c_info_mgr_ptr, 
-							DeviceEventHandler* p_device_event_handler_ptr, bool p_exp_time_comp_flag)
+							DeviceEventHandlerImpl* p_device_event_handler_ptr, bool p_exp_time_comp_flag)
 		{
 			m_cam_name = p_cam_name;
 			m_cam_ptr = p_cam_ptr;
@@ -39,7 +39,7 @@ class ImageEventHandler : public ImageEvent
 			image_msg = boost::make_shared<sensor_msgs::Image>();
 			// config_all_chunk_data();
 		}
-		~ImageEventHandler()
+		~ImageEventHandlerImpl()
 		{
 			m_cam_ptr = nullptr;
 		}
@@ -53,16 +53,16 @@ class ImageEventHandler : public ImageEvent
 			if(last_event_stamp.toSec() == 0.0)
 			{
 				image_stamp = image_arrival_time;
-				ROS_WARN("BLACKFLY NODELET: NO EVENT STAMP ON CAMERA: %s", m_cam_name.c_str());
+				ROS_WARN("Blackfly Nodelet: No event stamp on camera %s, assigning image arrival time instead", m_cam_name.c_str());
 			}
 			else
 			{
 				image_stamp = last_event_stamp;
 			}
-			// ROS_INFO("Time Diff b/w arrival time and stamp = %f mSec",  (image_arrival_time.toSec() - image_stamp.toSec()) * 1000.0);
+			ROS_INFO("REMOVE ME: Time Diff b/w arrival time and stamp = %f mSec",  (image_arrival_time.toSec() - image_stamp.toSec()) * 1000.0);
 			if (image->IsIncomplete())
 			{
-				ROS_ERROR("Blackfly nodelet : Image retrieval failed : image incomplete");
+				ROS_ERROR("Blackfly Nodelet: Image retrieval failed : image incomplete");
 				return;
 			}
 			if(m_exp_time_comp_flag)
@@ -175,11 +175,11 @@ class ImageEventHandler : public ImageEvent
 		CameraPtr m_cam_ptr;
 	private:
 		sensor_msgs::ImagePtr image_msg;
-		DeviceEventHandler* m_device_event_handler_ptr;
+		DeviceEventHandlerImpl* m_device_event_handler_ptr;
 		boost::shared_ptr<camera_info_manager::CameraInfoManager> m_c_info_mgr_ptr;
 		image_transport::CameraPublisher *m_cam_pub_ptr;
 		std::string m_cam_name;
 		ros::Time m_last_image_stamp;
 		bool m_exp_time_comp_flag = false;
 };
-#endif //IMG_EVENT_HANDLER_
+#endif //IMG_EVENT_HANDLER_IMPL_

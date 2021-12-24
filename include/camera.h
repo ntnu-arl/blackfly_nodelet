@@ -3,8 +3,8 @@
 #include <ros/ros.h>
 #include <nodelet/nodelet.h>
 #include "Spinnaker.h"
-#include "image_event_handler.h"
-#include "device_event_handler.h"
+#include "image_event_handler_impl.h"
+#include "device_event_handler_impl.h"
 #include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
@@ -100,12 +100,12 @@ public:
 		setup_camera();
 
 		// create event handlers
-		m_device_event_handler_ptr = new DeviceEventHandler(m_cam_ptr);
-		m_image_event_handler_ptr = new ImageEventHandler(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
+		m_device_event_handler_ptr = new DeviceEventHandlerImpl(m_cam_ptr);
+		m_image_event_handler_ptr = new ImageEventHandlerImpl(m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr, m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
 
 		// register event handlers
-		m_cam_ptr->RegisterEvent(*m_device_event_handler_ptr);
-		m_cam_ptr->RegisterEvent(*m_image_event_handler_ptr);
+		m_cam_ptr->RegisterEventHandler(*m_device_event_handler_ptr);
+		m_cam_ptr->RegisterEventHandler(*m_image_event_handler_ptr);
 
 		m_cam_ptr->BeginAcquisition();
 	}
@@ -114,8 +114,8 @@ public:
 		if (m_cam_ptr->IsValid())
 		{
 			m_cam_ptr->EndAcquisition();
-			m_cam_ptr->UnregisterEvent(*m_image_event_handler_ptr);
-			m_cam_ptr->UnregisterEvent(*m_device_event_handler_ptr);
+			m_cam_ptr->UnregisterEventHandler(*m_image_event_handler_ptr);
+			m_cam_ptr->UnregisterEventHandler(*m_device_event_handler_ptr);
 			delete m_image_event_handler_ptr;
 			delete m_device_event_handler_ptr;
 			m_cam_ptr->DeInit();
@@ -278,8 +278,8 @@ private:
 	// void* buffer = nullptr;
 	CameraPtr m_cam_ptr;
 	camera_settings m_cam_settings;
-	ImageEventHandler *m_image_event_handler_ptr;
-	DeviceEventHandler *m_device_event_handler_ptr;
+	ImageEventHandlerImpl *m_image_event_handler_ptr;
+	DeviceEventHandlerImpl *m_device_event_handler_ptr;
 	image_transport::ImageTransport *m_image_transport_ptr;
 	image_transport::CameraPublisher m_cam_pub;
 	boost::shared_ptr<camera_info_manager::CameraInfoManager> m_cam_info_mgr_ptr;
