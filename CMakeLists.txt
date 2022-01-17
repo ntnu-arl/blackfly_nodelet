@@ -41,25 +41,20 @@ include_directories(SYSTEM
                   ${OpenCV_INCLUDE_DIRS})
 include_directories(include)
 
-#add_library(image_event_handler src/image_event_handler.cpp)
-#add_library(device_event_handler src/device_event_handler.cpp)
-
 ## Create the nodelet blackfly library
 add_library(${PROJECT_NAME}_nodelet 
   src/blackfly_nodelet.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}_nodelet
-                      #image_event_handler
-                      #device_event_handler
                       ${Spinnaker_LIBRARIES}
                       ${catkin_LIBRARIES}
                       ${OpenCV_LIBRARIES}
 )
 
 add_dependencies(${PROJECT_NAME}_nodelet
-    	${catkin_EXPORTED_TARGETS}
-    	${${PROJECT_NAME}_EXPORTED_TARGETS}
+      ${catkin_EXPORTED_TARGETS}
+      ${${PROJECT_NAME}_EXPORTED_TARGETS}
 )
 
 ## Mark the nodelet library for installations
