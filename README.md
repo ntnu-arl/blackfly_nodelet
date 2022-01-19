@@ -11,7 +11,7 @@ Simple ROS driver wrapping the Spinnaker API for Blackfly Cameras.
 
 #### Notes
 
-1. This branch is only compatible with Spinnaker 2.x. Switch to the dev/spinnaker1 branch for Spinnaker 1.x.
+1. This branch is only compatible with Spinnaker 2.x. Switch to the master branch for Spinnaker 1.x.
 2. The machine may need to be rebooted after installing spinnaker
 3. Make sure to accept the increase in the usb-fs memory - if this is a small value, the camera may only work at a low frame rate
 
