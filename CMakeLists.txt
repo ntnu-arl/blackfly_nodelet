@@ -30,14 +30,7 @@ catkin_package(
   DEPENDS OpenCV
 )
 
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
-find_package(Spinnaker QUIET)
-if(NOT Spinnaker_FOUND)
-  message(STATUS "libSpinnaker not found in system library path")
-  include(cmake/DownloadSpinnaker.cmake)
-  download_spinnaker(Spinnaker_LIBRARIES Spinnaker_INCLUDE_DIRS)
-endif()
+include(cmake/FindSpinnaker.cmake)
 
 message(STATUS "libSpinnaker library: ${Spinnaker_LIBRARIES}")
 message(STATUS "libSpinnaker include: ${Spinnaker_INCLUDE_DIRS}")
