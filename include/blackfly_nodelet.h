@@ -28,8 +28,8 @@
 #include <nodelet/nodelet.h>
 
 // Driver Specific
-#include "image_event_handler_impl.h"
-#include "device_event_handler_impl.h"
+#include "image_event_handler.h"
+#include "device_event_handler.h"
 #include "camera.h"
 
 // Dynamic Reconfigure
