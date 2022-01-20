@@ -22,6 +22,7 @@ void blackfly_nodelet::onInit()
   ros::NodeHandle &nh = getMTNodeHandle();
   ros::NodeHandle &pnh = getMTPrivateNodeHandle();
 
+  // Get parameters from ROS param server
   std::vector<std::string> camera_serials;
   pnh.getParam("camera_serial_nums", camera_serials);
 
@@ -89,6 +90,7 @@ void blackfly_nodelet::onInit()
   bool enable_dyn_reconf;
   pnh.getParam("enable_dyn_reconf", enable_dyn_reconf);
 
+  // Check for correct number of parameters
   int num_cameras_listed = camera_names.size();
   if (camera_serials.size() != num_cameras_listed ||
       camera_info_paths.size() != num_cameras_listed ||
@@ -127,6 +129,7 @@ void blackfly_nodelet::onInit()
     ros::shutdown();
   }
 
+  // Get an instance for each camera
   for (int i = 0; i < camera_names.size(); i++)
   {
     ROS_DEBUG("Camera #%i", i);

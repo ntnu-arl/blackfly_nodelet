@@ -46,9 +46,36 @@ namespace blackfly
 class blackfly_nodelet : public nodelet::Nodelet
 {
  public:
+  /**
+   * @brief Construct a new blackfly nodelet object
+   * 
+   * This calls the default nodelet constructor which in turn calls onInit
+   * 
+   */
   blackfly_nodelet() : first_callback(true), Nodelet() {}
+
+  /**
+   * @brief Destroy the blackfly nodelet object
+   * 
+   * Also releases all camera and system instances
+   * 
+   */
   ~blackfly_nodelet();
+
+  /**
+   * @brief Setup the nodelet
+   * 
+   * Reads parameters, creates instances etc
+   * 
+   */
   virtual void onInit();
+
+  /**
+   * @brief Dynamic reconfigure callback
+   * 
+   * @param config new config
+   * @param level unused (required by api)
+   */
   void callback_dyn_reconf(blackfly::BlackFlyConfig &config, uint32_t level);
 
  private:
