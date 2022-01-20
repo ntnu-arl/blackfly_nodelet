@@ -59,6 +59,7 @@ class blackfly_nodelet : public nodelet::Nodelet
   CameraList camList;
   std::vector<blackfly_camera *> m_cam_vect;
   bool first_callback;
+
   // dynamic reconfigure
   dynamic_reconfigure::Server<blackfly::BlackFlyConfig> *dr_srv;
   dynamic_reconfigure::Server<blackfly::BlackFlyConfig>::CallbackType

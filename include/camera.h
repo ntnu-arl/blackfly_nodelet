@@ -30,6 +30,7 @@ struct camera_settings
     gamma = 1.0;
     exp_comp_flag = false;
   }
+
   camera_settings(std::string cam_name_p, std::string cam_info_path_p,
                   bool mono_p, bool is_triggered_p, float fps_p,
                   bool is_auto_exp_p, float max_exp_p, float min_exp_p,
@@ -60,6 +61,7 @@ struct camera_settings
     auto_exposure_priority = auto_exposure_priority_p;
     exp_comp_flag = exp_comp_flag_p;
   }
+
   std::string cam_name;
   std::string cam_info_path;
   bool mono;
@@ -118,6 +120,7 @@ class blackfly_camera
 
     m_cam_ptr->BeginAcquisition();
   }
+
   ~blackfly_camera()
   {
     if (m_cam_ptr->IsValid())
@@ -131,6 +134,7 @@ class blackfly_camera
       std::free(user_buffer);
     }
   }
+
   // This function sets the internal buffersize of spinnaker -> By default it
   // allocates memory based on the frame rate of the camera. This may require
   // very large memory when using multiple cameras, and may cause additional
@@ -183,6 +187,7 @@ class blackfly_camera
     // Display Buffer Info
     ptrBufferCount->SetValue(buff_size);
   }
+
   void setup_camera()
   {
     try
