@@ -1,41 +1,40 @@
 #ifndef BLACKFLYNODELET_
 #define BLACKFLYNODELET_
 
+// C++
 #include <vector>
 #include <string>
 #include <time.h>
+#include <pthread.h>
 
+// Spinnaker
+#include <Spinnaker.h>
+#include <SpinGenApi/SpinnakerGenApi.h>
+
+// ROS
 #include <ros/ros.h>
-
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/fill_image.h>
-
-#include "std_msgs/Float64.h"
-#include "std_msgs/UInt64.h"
-#include "std_msgs/Time.h"
-
 #include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/UInt64.h>
+#include <std_msgs/Time.h>
 
-#include <pthread.h>
-
+// Nodelet
 #include <pluginlib/class_list_macros.h>
-
-#include "Spinnaker.h"
-#include "SpinGenApi/SpinnakerGenApi.h"
-
-// Nodelet stuff
 #include <nodelet/nodelet.h>
 
-#include "image_event_handler.h"
-#include "device_event_handler.h"
-
-#include <dynamic_reconfigure/server.h>
-#include <blackfly/BlackFlyConfig.h>
-
+// Driver Specific
+#include "image_event_handler_impl.h"
+#include "device_event_handler_impl.h"
 #include "camera.h"
+
+// Dynamic Reconfigure
+#include <dynamic_reconfigure/server.h>
+#include "blackfly/BlackFlyConfig.h"
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;

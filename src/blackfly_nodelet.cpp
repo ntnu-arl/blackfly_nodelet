@@ -1,6 +1,7 @@
-#include "../include/blackfly_nodelet.h"
+// Driver Specific
+#include "blackfly_nodelet.h"
 
-// Nodelet stuff
+// Nodelet
 #include <pluginlib/class_list_macros.h>
 
 PLUGINLIB_EXPORT_CLASS(blackfly::blackfly_nodelet, nodelet::Nodelet)
@@ -17,6 +18,7 @@ blackfly_nodelet::~blackfly_nodelet()
   camList.Clear();
   system->ReleaseInstance();
 }
+
 void blackfly_nodelet::onInit()
 {
   ros::NodeHandle &nh = getMTNodeHandle();

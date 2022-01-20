@@ -1,21 +1,26 @@
 #ifndef IMG_EVENT_HANDLER_
 #define IMG_EVENT_HANDLER_
+
+// C++
+
+// Spinnaker
+#include <Spinnaker.h>
+#include <SpinGenApi/SpinnakerGenApi.h>
+
+// ROS
+#include <ros/ros.h>
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/fill_image.h>
-
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
 
+// Nodelet
 #include <pluginlib/class_list_macros.h>
-
-#include "Spinnaker.h"
-#include "SpinGenApi/SpinnakerGenApi.h"
-
-#include <ros/ros.h>
 #include <nodelet/nodelet.h>
 
+// Driver Specific
 #include "device_event_handler.h"
 
 using namespace Spinnaker;

@@ -1,12 +1,18 @@
 #ifndef DEV_EVENT_HANDLER_
 #define DEV_EVENT_HANDLER_
-#include "Spinnaker.h"
-#include "SpinGenApi/SpinnakerGenApi.h"
+
+// C++
 #include <iostream>
 #include <sstream>
-#include <ros/ros.h>
 #include <deque>
 #include <mutex>
+
+// Spinnaker
+#include <Spinnaker.h>
+#include <SpinGenApi/SpinnakerGenApi.h>
+
+// ROS
+#include <ros/ros.h>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;

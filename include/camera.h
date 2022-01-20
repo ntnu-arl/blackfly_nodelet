@@ -1,5 +1,11 @@
+// C++
 #include <vector>
 #include <string>
+
+// Spinnaker
+#include <Spinnaker.h>
+
+// ROS
 #include <ros/ros.h>
 #include <nodelet/nodelet.h>
 #include "Spinnaker.h"
@@ -8,6 +14,13 @@
 #include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
+
+// Nodelet
+#include <nodelet/nodelet.h>
+
+// Driver Specific
+#include "image_event_handler_impl.h"
+#include "device_event_handler_impl.h"
 
 using namespace Spinnaker;
 
