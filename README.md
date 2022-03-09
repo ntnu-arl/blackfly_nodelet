@@ -54,6 +54,7 @@ Check the `launch/2_cameras.launch` launchfile for an example of running multipl
   ```bash
   GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
   ```
+
   to
 
   ```bash
@@ -65,12 +66,13 @@ Check the `launch/2_cameras.launch` launchfile for an example of running multipl
   ```bash
   sudo update-grub  
   ```
+
   and finally restart the system and check that the value has been set correctly using
   
   ```bash
   cat /sys/module/usbcore/parameters/usbfs_memory_mb  
   ```
-  
+
 4. It is recommended to use a 330 Ohm or lower value resistor to connect the OptoIn to the trigger signal.
 
 ## Timestamping
