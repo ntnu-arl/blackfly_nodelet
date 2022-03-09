@@ -6,8 +6,9 @@ Simple ROS driver wrapping the Spinnaker API for Blackfly Cameras.
 
 ### Spinnaker
 
-1. Download the Spinnaker SDK from FLIR as per your distribution and architecture (Note: this driver has only been tested on Linux variants)
+1. Download the [Spinnaker SDK from FLIR](https://www.flir.eu/products/spinnaker-sdk/) as per your distribution and architecture (Note: this driver has only been tested on Linux variants)
 2. Unzip it and go through the README for installation instructions for your system
+3. If Spinnaker is installed in a custom location, you will need to include the path to it in the [FindSpinnaker.cmake](cmake/FindSpinnaker.cmake)
 
 #### Notes
 
@@ -54,6 +55,7 @@ Check the `launch/2_cameras.launch` launchfile for an example of running multipl
   ```bash
   GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
   ```
+
   to
 
   ```bash
@@ -65,12 +67,13 @@ Check the `launch/2_cameras.launch` launchfile for an example of running multipl
   ```bash
   sudo update-grub  
   ```
+
   and finally restart the system and check that the value has been set correctly using
   
   ```bash
   cat /sys/module/usbcore/parameters/usbfs_memory_mb  
   ```
-  
+
 4. It is recommended to use a 330 Ohm or lower value resistor to connect the OptoIn to the trigger signal.
 
 ## Timestamping

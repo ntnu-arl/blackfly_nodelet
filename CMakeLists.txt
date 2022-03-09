@@ -30,14 +30,7 @@ catkin_package(
   DEPENDS OpenCV
 )
 
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
-find_package(Spinnaker QUIET)
-if(NOT Spinnaker_FOUND)
-  message(STATUS "libSpinnaker not found in system library path")
-  include(cmake/DownloadSpinnaker.cmake)
-  download_spinnaker(Spinnaker_LIBRARIES Spinnaker_INCLUDE_DIRS)
-endif()
+include(cmake/FindSpinnaker.cmake)
 
 message(STATUS "libSpinnaker library: ${Spinnaker_LIBRARIES}")
 message(STATUS "libSpinnaker include: ${Spinnaker_INCLUDE_DIRS}")
@@ -48,25 +41,20 @@ include_directories(SYSTEM
                   ${OpenCV_INCLUDE_DIRS})
 include_directories(include)
 
-#add_library(image_event_handler src/image_event_handler.cpp)
-#add_library(device_event_handler src/device_event_handler.cpp)
-
 ## Create the nodelet blackfly library
 add_library(${PROJECT_NAME}_nodelet 
   src/blackfly_nodelet.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}_nodelet
-                      #image_event_handler
-                      #device_event_handler
                       ${Spinnaker_LIBRARIES}
                       ${catkin_LIBRARIES}
                       ${OpenCV_LIBRARIES}
 )
 
 add_dependencies(${PROJECT_NAME}_nodelet
-    	${catkin_EXPORTED_TARGETS}
-    	${${PROJECT_NAME}_EXPORTED_TARGETS}
+      ${catkin_EXPORTED_TARGETS}
+      ${${PROJECT_NAME}_EXPORTED_TARGETS}
 )
 
 ## Mark the nodelet library for installations
