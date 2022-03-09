@@ -6,8 +6,9 @@ Simple ROS driver wrapping the Spinnaker API for Blackfly Cameras.
 
 ### Spinnaker
 
-1. Download the Spinnaker SDK from FLIR as per your distribution and architecture (Note: this driver has only been tested on Linux variants)
+1. Download the [Spinnaker SDK from FLIR](https://www.flir.eu/products/spinnaker-sdk/) as per your distribution and architecture (Note: this driver has only been tested on Linux variants)
 2. Unzip it and go through the README for installation instructions for your system
+3. If Spinnaker is installed in a custom location, you will need to include the path to it in the [FindSpinnaker.cmake](cmake/FindSpinnaker.cmake)
 
 #### Notes
 
