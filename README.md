@@ -85,3 +85,10 @@ Images are timestamped using the End of Exposure event given by the Spinnaker AP
 Set `enable_dyn_reconf` param in the launch file to `true` to change the following parameters online:
 
 ![Dynamic Reconfigure Parameters](https://github.com/unr-arl/blackfly_nodelet/blob/master/imgs/dyn_rec.png)
+
+You can open an issue or contact us for any questions:
+
+* [Nikhil Khedekar](mailto:nikhil.v.khedekar@ntnu.no)
+* [Paolo De Petris](mailto:paolo.de.petris@ntnu.no)
+* [Frank Mascarich](mailto:fmascarich@nevada.unr.edu)
+* [Kostas Alexis](mailto:konstantinos.alexis@ntnu.no)

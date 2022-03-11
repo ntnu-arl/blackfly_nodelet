@@ -5,7 +5,8 @@
   <description>The blackfly driver</description>
 
   <maintainer email="fmascarich@nevada.unr.edu">Frank Mascarich</maintainer>
-  <maintainer email="nikhilvkhedekar@gmail.com">Nikhil Khedekar</maintainer>
+  <maintainer email="nikhil.v.khedekar@ntnu.no">Nikhil Khedekar</maintainer>
+  <maintainer email="paolo.de.petris@ntnu.no">Paolo De Petris</maintainer>
 
   <license>BSD</license>
 
