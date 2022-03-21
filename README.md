@@ -12,7 +12,13 @@ Simple ROS driver wrapping the Spinnaker API for Blackfly Cameras.
 
 #### Notes
 
-1. This branch is only compatible with Spinnaker 2.x. Switch to the `spinnaker1` branch for Spinnaker 1.x.
+1. This branch is only compatible with Spinnaker 2.x as noted in the table below. Switch to the `spinnaker1` branch for Spinnaker 1.x.
+   * Ubuntu 20.04:
+      | Version   | amd64                       |
+      | :-------- | :-------------------------- |
+      | 2.5.0.80  | Y                           |
+      | 2.4.0.143 | Y                           |
+      | 2.0.0.109 | N - Use `spinnaker1` branch |
 2. The machine may need to be rebooted after installing spinnaker
 3. Make sure to accept the increase in the usb-fs memory - if this is a small value, the camera may only work at a low frame rate
 
