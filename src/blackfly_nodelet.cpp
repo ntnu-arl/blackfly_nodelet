@@ -43,6 +43,9 @@ namespace blackfly
     std::vector<bool> is_triggered_flags;
     pnh.getParam("is_triggered_flags", is_triggered_flags);
 
+    std::vector<float> trigger_delays;
+    pnh.getParam("trigger_delays", trigger_delays);
+
     std::vector<float> fps;
     pnh.getParam("fps", fps);
 
@@ -98,7 +101,7 @@ namespace blackfly
     int num_cameras_listed = camera_names.size();
     if (camera_serials.size() != num_cameras_listed ||
         camera_info_paths.size() != num_cameras_listed || mono_flags.size() != num_cameras_listed ||
-        is_triggered_flags.size() != num_cameras_listed || fps.size() != num_cameras_listed ||
+        is_triggered_flags.size() != num_cameras_listed || trigger_delays.size() != num_cameras_listed || fps.size() != num_cameras_listed ||
         is_auto_exp_flags.size() != num_cameras_listed ||
         max_auto_exp.size() != num_cameras_listed || min_auto_exp.size() != num_cameras_listed ||
         fixed_exp.size() != num_cameras_listed || auto_gain_flags.size() != num_cameras_listed ||
@@ -151,7 +154,7 @@ namespace blackfly
         ros::shutdown();
       }
       camera_settings settings(
-          camera_names[i], camera_info_paths[i], mono_flags[i], is_triggered_flags[i], fps[i],
+          camera_names[i], camera_info_paths[i], mono_flags[i], is_triggered_flags[i], trigger_delays[i], fps[i],
           is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i], fixed_exp[i], auto_gain_flags[i],
           gains[i], max_gains[i], min_gains[i], enable_gamma[i], gammas[i], binnings[i],
           binning_mode[i], lighting_mode[i], auto_exposure_priority[i], exp_comp_flags[i]);

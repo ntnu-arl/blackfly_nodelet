@@ -25,6 +25,7 @@ struct camera_settings
     cam_info_path = "None";
     mono = false;
     is_triggered = false;
+    trigger_delay = 13.0;
     fps = 20.0;
     is_auto_exp = true;
     max_auto_exp_time = 30000.0;
@@ -37,7 +38,7 @@ struct camera_settings
     exp_comp_flag = false;
   }
   camera_settings(std::string cam_name_p, std::string cam_info_path_p, bool mono_p,
-                  bool is_triggered_p, float fps_p, bool is_auto_exp_p, float max_exp_p,
+                  bool is_triggered_p, float trigger_delay_p, float fps_p, bool is_auto_exp_p, float max_exp_p,
                   float min_exp_p, float fixed_exp_p, bool auto_gain_p, float gain_p,
                   float max_gain_p, float min_gain_p, bool enable_gamma_p, float gamma_p,
                   int binning_p, int binning_mode_p, int lighting_mode_p,
@@ -47,6 +48,7 @@ struct camera_settings
     cam_info_path = cam_info_path_p;
     mono = mono_p;
     is_triggered = is_triggered_p;
+    trigger_delay = trigger_delay_p;
     fps = fps_p;
     is_auto_exp = is_auto_exp_p;
     max_auto_exp_time = max_exp_p;
@@ -68,6 +70,7 @@ struct camera_settings
   std::string cam_info_path;
   bool mono;
   bool is_triggered;
+  float trigger_delay;
   float fps;
   bool is_auto_exp;
   float max_auto_exp_time;
@@ -272,6 +275,7 @@ class blackfly_camera
         m_cam_ptr->TriggerActivation = TriggerActivation_RisingEdge;
         m_cam_ptr->TriggerMode = TriggerMode_On;
         // m_cam_ptr->Counter = ;
+        m_cam_ptr->TriggerDelay.SetValue(m_cam_settings.trigger_delay);
       }
       else
       {
