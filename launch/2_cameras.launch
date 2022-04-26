@@ -4,7 +4,7 @@
 
   <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" output="screen">
     <!-- Serial Numbers of Cameras -->
-    <rosparam param="camera_serial_nums">["19292936","19061688"]</rosparam>
+    <rosparam param="camera_serial_nums">["22047471","22047464"]</rosparam>
     <!-- Names of Cameras (used for topic names, etc) -->
     <rosparam param="camera_names">["cam1", "cam2"]</rosparam>
     <!-- Paths to Camera info files -->
@@ -14,6 +14,9 @@
     <rosparam param="mono_flags">[true, true]</rosparam>
     <!-- Is the camera triggered? True = Line0, False = FrameRate -->
     <rosparam param="is_triggered_flags">[false, false]</rosparam>
+    <!-- Time in microseconds between when the camera receives a trigger and
+    when exposure begins for the image  -->
+    <rosparam param="trigger_delays">[13.0, 5000.0]</rosparam>
     <!-- Frame Rate if not triggered-->
     <rosparam param="fps">[20.0, 20.0]</rosparam>
 
