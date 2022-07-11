@@ -53,6 +53,8 @@
     <rosparam param="auto_exposure_priority">       [0]</rosparam>
     <!-- Enable Exposure Time Compensation -->
     <rosparam param="exp_comp_flags">     [false]</rosparam>
+    <!-- Device Link Throughput Limits for Ethernet Cameras -->
+    <rosparam param="device_link_throughput_limits">     [40325200]</rosparam>
 
     <!-- Enable Dynamic Reconfigure -->
     <rosparam param="enable_dyn_reconf">  true</rosparam>
