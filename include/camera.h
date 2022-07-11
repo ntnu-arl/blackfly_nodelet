@@ -277,6 +277,7 @@ class blackfly_camera
         // m_cam_ptr->TriggerSource = TriggerSource_Counter0End;
         m_cam_ptr->TriggerActivation = TriggerActivation_RisingEdge;
         m_cam_ptr->TriggerMode = TriggerMode_On;
+        m_cam_ptr->AcquisitionFrameRateEnable = false;
         // m_cam_ptr->Counter = ;
         m_cam_ptr->TriggerDelay.SetValue(m_cam_settings.trigger_delay);
       }
