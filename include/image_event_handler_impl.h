@@ -69,7 +69,7 @@ class ImageEventHandlerImpl : public ImageEventHandler
     }
     if (image->IsIncomplete())
     {
-      ROS_ERROR("Blackfly Nodelet: Image retrieval failed : image incomplete");
+      ROS_ERROR("Blackfly Nodelet: Image retrieval failed: image incomplete for %s", m_cam_name.c_str());
       return;
     }
     if (m_exp_time_comp_flag)
