@@ -185,7 +185,9 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig & config, ui
   camList[config.cam_id]->AcquisitionFrameRate = config.fps;
   // gamma
   camList[config.cam_id]->GammaEnable = config.enable_gamma;
-  camList[config.cam_id]->Gamma.SetValue(config.gamma);
+  if (config.enable_gamma) {
+    camList[config.cam_id]->Gamma.SetValue(config.gamma);
+  }
 
   switch (config.exposure_auto) {
     case 0:
@@ -226,15 +228,17 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig & config, ui
         AutoExposureLightingModeEnums::AutoExposureLightingMode_Normal);
       break;
   }
-  switch (config.auto_exposure_priority) {
-    case 1:
-      camList[config.cam_id]->AutoExposureControlPriority.SetValue(
-        AutoExposureControlPriorityEnums::AutoExposureControlPriority_ExposureTime);
-      break;
-    default:
-      camList[config.cam_id]->AutoExposureControlPriority.SetValue(
-        AutoExposureControlPriorityEnums::AutoExposureControlPriority_Gain);
-      break;
+  if (config.exposure_auto != 0 && config.gain_auto != 0) {
+    switch (config.auto_exposure_priority) {
+      case 1:
+        camList[config.cam_id]->AutoExposureControlPriority.SetValue(
+          AutoExposureControlPriorityEnums::AutoExposureControlPriority_ExposureTime);
+        break;
+      default:
+        camList[config.cam_id]->AutoExposureControlPriority.SetValue(
+          AutoExposureControlPriorityEnums::AutoExposureControlPriority_Gain);
+        break;
+    }
   }
 
   if (config.acquisition_stop) {
