@@ -2,17 +2,17 @@
 // All rights reserved.
 
 // This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree. 
+// LICENSE file in the root directory of this source tree.
 
 #ifndef DEV_EVENT_HANDLER_IMPL_
 #define DEV_EVENT_HANDLER_IMPL_
-#include "Spinnaker.h"
-#include "SpinGenApi/SpinnakerGenApi.h"
-#include <iostream>
-#include <sstream>
 #include <ros/ros.h>
 #include <deque>
+#include <iostream>
 #include <mutex>
+#include <sstream>
+#include "SpinGenApi/SpinnakerGenApi.h"
+#include "Spinnaker.h"
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -20,31 +20,26 @@ using namespace Spinnaker::GenICam;
 
 class DeviceEventHandlerImpl : public DeviceEventHandler
 {
- public:
+public:
   DeviceEventHandlerImpl(CameraPtr cam_ptr)
   {
     // save the camera pointer
     m_cam_ptr = cam_ptr;
     // get the GENAPI node map
-    INodeMap &node_map = m_cam_ptr->GetNodeMap();
-    try
-    {
+    INodeMap & node_map = m_cam_ptr->GetNodeMap();
+    try {
       CEnumerationPtr ptrEventSelector = node_map.GetNode("EventSelector");
-      if (!IsAvailable(ptrEventSelector) || !IsReadable(ptrEventSelector))
-      {
+      if (!IsAvailable(ptrEventSelector) || !IsReadable(ptrEventSelector)) {
         ROS_ERROR("Blackfly Nodelet: Unable to retrieve event selector entries. Aborting");
         return;
       }
       NodeList_t entries;
       ptrEventSelector->GetEntries(entries);
-      for (unsigned int i = 0; i < entries.size(); i++)
-      {
+      for (unsigned int i = 0; i < entries.size(); i++) {
         // Select entry on selector node
         CEnumEntryPtr ptrEnumEntry = entries.at(i);
-        if (ptrEnumEntry->GetDisplayName() == "Exposure End")
-        {
-          if (!IsAvailable(ptrEnumEntry) || !IsReadable(ptrEnumEntry))
-          {
+        if (ptrEnumEntry->GetDisplayName() == "Exposure End") {
+          if (!IsAvailable(ptrEnumEntry) || !IsReadable(ptrEnumEntry)) {
             // Skip if node fails
             ROS_WARN("Blackfly Nodelet: Exposure end event is unavailable or unreadable");
             continue;
@@ -54,24 +49,20 @@ class DeviceEventHandlerImpl : public DeviceEventHandler
           ptrEventSelector->SetIntValue(ptrEnumEntry->GetValue());
           // Retrieve event notification node (an enumeration node)
           CEnumerationPtr ptrEventNotification = node_map.GetNode("EventNotification");
-          if (!IsAvailable(ptrEventNotification) || !IsWritable(ptrEventNotification))
-          {
+          if (!IsAvailable(ptrEventNotification) || !IsWritable(ptrEventNotification)) {
             ROS_WARN("Blackfly Nodelet: Event Notification is unavailable or unwritable");
             continue;
           }
           // Retrieve entry node to enable device event
           CEnumEntryPtr ptrEventNotificationOn = ptrEventNotification->GetEntryByName("On");
-          if (!IsAvailable(ptrEventNotification) || !IsReadable(ptrEventNotification))
-          {
+          if (!IsAvailable(ptrEventNotification) || !IsReadable(ptrEventNotification)) {
             ROS_WARN("Blackfly Nodelet: Event Notification is unavailable or unreadable");
             continue;
           }
           ptrEventNotification->SetIntValue(ptrEventNotificationOn->GetValue());
         }
       }
-    }
-    catch (Spinnaker::Exception &e)
-    {
+    } catch (Spinnaker::Exception & e) {
       ROS_FATAL("Blackfly Nodelet: Failed to configure device event handler");
     }
   }
@@ -83,8 +74,7 @@ class DeviceEventHandlerImpl : public DeviceEventHandler
   }
   void OnDeviceEvent(gcstring eventName)
   {
-    if (eventName == "EventExposureEnd")
-    {
+    if (eventName == "EventExposureEnd") {
       // lock the mutex to prevent changes to member timestamp object
       timestamp_mutex.lock();
       // get the now time as the end of the exposure
@@ -95,12 +85,9 @@ class DeviceEventHandlerImpl : public DeviceEventHandler
   }
   ros::Time get_last_exposure_end()
   {
-    if (m_last_frame_time.toSec() == 0.0)
-    {
+    if (m_last_frame_time.toSec() == 0.0) {
       return ros::Time(0, 0);
-    }
-    else
-    {
+    } else {
       // lock the mutex to prevent changes to the member timestamp object
       timestamp_mutex.lock();
       // get the last frame time
@@ -114,7 +101,7 @@ class DeviceEventHandlerImpl : public DeviceEventHandler
     }
   }
 
- private:
+private:
   // member mutex to lock the timestamp member when is set/get
   std::mutex timestamp_mutex;
   // initialize the timestamp member to 0.0 to indicate it has not been set

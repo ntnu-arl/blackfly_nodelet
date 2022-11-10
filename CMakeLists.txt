@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   nodelet
   dynamic_reconfigure
-) 
+)
 
 find_package(OpenCV REQUIRED)
 
@@ -42,7 +42,7 @@ include_directories(SYSTEM
 include_directories(include)
 
 ## Create the nodelet blackfly library
-add_library(${PROJECT_NAME}_nodelet 
+add_library(${PROJECT_NAME}_nodelet
   src/blackfly_nodelet.cpp
 )
 
