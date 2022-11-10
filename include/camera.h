@@ -2,18 +2,18 @@
 // All rights reserved.
 
 // This source code is licensed under the BSD-style license found in the
-// LICENSE file in the root directory of this source tree. 
+// LICENSE file in the root directory of this source tree.
 
-#include <vector>
-#include <string>
-#include <ros/ros.h>
-#include <nodelet/nodelet.h>
-#include "Spinnaker.h"
-#include "image_event_handler_impl.h"
-#include "device_event_handler_impl.h"
-#include <sensor_msgs/image_encodings.h>
-#include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
+#include <image_transport/image_transport.h>
+#include <nodelet/nodelet.h>
+#include <ros/ros.h>
+#include <sensor_msgs/image_encodings.h>
+#include <string>
+#include <vector>
+#include "Spinnaker.h"
+#include "device_event_handler_impl.h"
+#include "image_event_handler_impl.h"
 
 using namespace Spinnaker;
 
@@ -38,12 +38,12 @@ struct camera_settings
     exp_comp_flag = false;
     device_link_throughput_limit = 40325200;
   }
-  camera_settings(std::string cam_name_p, std::string cam_info_path_p, bool mono_p,
-                  bool is_triggered_p, float trigger_delay_p, float fps_p, bool is_auto_exp_p, float max_exp_p,
-                  float min_exp_p, float fixed_exp_p, bool auto_gain_p, float gain_p,
-                  float max_gain_p, float min_gain_p, bool enable_gamma_p, float gamma_p,
-                  int binning_p, int binning_mode_p, int lighting_mode_p,
-                  int auto_exposure_priority_p, bool exp_comp_flag_p, int device_link_throughput_limit_p)
+  camera_settings(
+    std::string cam_name_p, std::string cam_info_path_p, bool mono_p, bool is_triggered_p,
+    float trigger_delay_p, float fps_p, bool is_auto_exp_p, float max_exp_p, float min_exp_p,
+    float fixed_exp_p, bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p,
+    bool enable_gamma_p, float gamma_p, int binning_p, int binning_mode_p, int lighting_mode_p,
+    int auto_exposure_priority_p, bool exp_comp_flag_p, int device_link_throughput_limit_p)
   {
     cam_name = cam_name_p;
     cam_info_path = cam_info_path_p;
@@ -94,7 +94,7 @@ struct camera_settings
 
 class blackfly_camera
 {
- public:
+public:
   blackfly_camera(camera_settings settings, CameraPtr cam_ptr)
   {
     // save the camera pointer and the settings object
@@ -108,7 +108,7 @@ class blackfly_camera
     m_image_transport_ptr = new image_transport::ImageTransport(nh);
     m_cam_pub = m_image_transport_ptr->advertiseCamera(m_cam_settings.cam_name, 10);
     m_cam_info_mgr_ptr = boost::make_shared<camera_info_manager::CameraInfoManager>(
-        nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
+      nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
     m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
     // setup the camera
@@ -117,8 +117,8 @@ class blackfly_camera
     // create event handlers
     m_device_event_handler_ptr = new DeviceEventHandlerImpl(m_cam_ptr);
     m_image_event_handler_ptr = new ImageEventHandlerImpl(
-        m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr,
-        m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
+      m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr,
+      m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
 
     // register event handlers
     m_cam_ptr->RegisterEventHandler(*m_device_event_handler_ptr);
@@ -128,8 +128,7 @@ class blackfly_camera
   }
   ~blackfly_camera()
   {
-    if (m_cam_ptr->IsValid())
-    {
+    if (m_cam_ptr->IsValid()) {
       m_cam_ptr->EndAcquisition();
       m_cam_ptr->UnregisterEventHandler(*m_image_event_handler_ptr);
       m_cam_ptr->UnregisterEventHandler(*m_device_event_handler_ptr);
@@ -145,35 +144,31 @@ class blackfly_camera
   void set_buffer_size(unsigned int buff_size)
   {
     // Retrieve Stream Parameters device nodemap
-    Spinnaker::GenApi::INodeMap &sNodeMap = m_cam_ptr->GetTLStreamNodeMap();
+    Spinnaker::GenApi::INodeMap & sNodeMap = m_cam_ptr->GetTLStreamNodeMap();
     // Retrieve Buffer Handling Mode Information
     CEnumerationPtr ptrHandlingMode = sNodeMap.GetNode("StreamBufferHandlingMode");
-    if (!IsAvailable(ptrHandlingMode) || !IsWritable(ptrHandlingMode))
-    {
+    if (!IsAvailable(ptrHandlingMode) || !IsWritable(ptrHandlingMode)) {
       ROS_ERROR("Unable to set Buffer Handling mode (node retrieval). Aborting...");
     }
     CEnumEntryPtr ptrHandlingModeEntry = ptrHandlingMode->GetCurrentEntry();
-    if (!IsAvailable(ptrHandlingModeEntry) || !IsReadable(ptrHandlingModeEntry))
-    {
+    if (!IsAvailable(ptrHandlingModeEntry) || !IsReadable(ptrHandlingModeEntry)) {
       ROS_ERROR("Unable to set Buffer Handling mode (Entry retrieval). Aborting...");
     }
     // Set stream buffer Count Mode to manual
     CEnumerationPtr ptrStreamBufferCountMode = sNodeMap.GetNode("StreamBufferCountMode");
-    if (!IsAvailable(ptrStreamBufferCountMode) || !IsWritable(ptrStreamBufferCountMode))
-    {
+    if (!IsAvailable(ptrStreamBufferCountMode) || !IsWritable(ptrStreamBufferCountMode)) {
       ROS_ERROR("Unable to set Buffer Count Mode (node retrieval). Aborting...");
     }
     CEnumEntryPtr ptrStreamBufferCountModeManual =
-        ptrStreamBufferCountMode->GetEntryByName("Manual");
-    if (!IsAvailable(ptrStreamBufferCountModeManual) || !IsReadable(ptrStreamBufferCountModeManual))
-    {
+      ptrStreamBufferCountMode->GetEntryByName("Manual");
+    if (
+      !IsAvailable(ptrStreamBufferCountModeManual) || !IsReadable(ptrStreamBufferCountModeManual)) {
       ROS_ERROR("Unable to set Buffer Count Mode entry (Entry retrieval). Aborting...");
     }
     ptrStreamBufferCountMode->SetIntValue(ptrStreamBufferCountModeManual->GetValue());
     // Retrieve and modify Stream Buffer Count
     CIntegerPtr ptrBufferCount = sNodeMap.GetNode("StreamBufferCountManual");
-    if (!IsAvailable(ptrBufferCount) || !IsWritable(ptrBufferCount))
-    {
+    if (!IsAvailable(ptrBufferCount) || !IsWritable(ptrBufferCount)) {
       ROS_ERROR("Unable to set Buffer Count (Integer node retrieval). Aborting...");
     }
     // Display Buffer Info
@@ -181,20 +176,16 @@ class blackfly_camera
   }
   void setup_camera()
   {
-    try
-    {
+    try {
       // initialize the camera
       m_cam_ptr->Init();
 
       m_cam_ptr->AcquisitionStop();
 
       // Set up pixel format
-      if (m_cam_settings.mono)
-      {
+      if (m_cam_settings.mono) {
         m_cam_ptr->PixelFormat = PixelFormat_Mono8;
-      }
-      else
-      {
+      } else {
         m_cam_ptr->PixelFormat = PixelFormat_BGR8;
       }
       m_cam_ptr->BinningVertical = m_cam_settings.binning;
@@ -203,72 +194,56 @@ class blackfly_camera
       m_cam_ptr->BinningHorizontal = m_cam_settings.binning;
 
       // set binning type 0=Average, 1=Sum
-      if (m_cam_settings.binning_mode == 0)
-      {
+      if (m_cam_settings.binning_mode == 0) {
         m_cam_ptr->BinningHorizontalMode.SetValue(
-            BinningHorizontalModeEnums::BinningHorizontalMode_Average);
+          BinningHorizontalModeEnums::BinningHorizontalMode_Average);
         m_cam_ptr->BinningVerticalMode.SetValue(
-            BinningVerticalModeEnums::BinningVerticalMode_Average);
-      }
-      else if (m_cam_settings.binning_mode == 1)
-      {
+          BinningVerticalModeEnums::BinningVerticalMode_Average);
+      } else if (m_cam_settings.binning_mode == 1) {
         m_cam_ptr->BinningHorizontalMode.SetValue(
-            BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
+          BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
         m_cam_ptr->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Sum);
       }
 
       // set lighting type 0=Normal, 1=Backlight, 2=Frontlight
-      if (m_cam_settings.lighting_mode == 1)
-      {
+      if (m_cam_settings.lighting_mode == 1) {
         m_cam_ptr->AutoExposureLightingMode.SetValue(
-            AutoExposureLightingModeEnums::AutoExposureLightingMode_Backlight);
-      }
-      else if (m_cam_settings.lighting_mode == 2)
-      {
+          AutoExposureLightingModeEnums::AutoExposureLightingMode_Backlight);
+      } else if (m_cam_settings.lighting_mode == 2) {
         m_cam_ptr->AutoExposureLightingMode.SetValue(
-            AutoExposureLightingModeEnums::AutoExposureLightingMode_Frontlight);
+          AutoExposureLightingModeEnums::AutoExposureLightingMode_Frontlight);
       }
 
       // set acquisition mode, Continuous instead of single frame or burst modes
       m_cam_ptr->AcquisitionMode = AcquisitionMode_Continuous;
 
       // setup exposure
-      if (m_cam_settings.is_auto_exp)
-      {
+      if (m_cam_settings.is_auto_exp) {
         m_cam_ptr->ExposureAuto = ExposureAuto_Continuous;
         m_cam_ptr->AutoExposureExposureTimeUpperLimit = m_cam_settings.max_auto_exp_time;
         m_cam_ptr->AutoExposureExposureTimeLowerLimit = m_cam_settings.min_auto_exp_time;
-      }
-      else
-      {
+      } else {
         m_cam_ptr->ExposureAuto = ExposureAuto_Off;
         m_cam_ptr->ExposureTime = m_cam_settings.fixed_exp_time;
       }
       // setup gain
       m_cam_ptr->GainAuto = GainAuto_Off;
-      if (m_cam_settings.auto_gain)
-      {
+      if (m_cam_settings.auto_gain) {
         m_cam_ptr->GainAuto = GainAuto_Continuous;
         m_cam_ptr->AutoExposureGainUpperLimit = m_cam_settings.max_gain;
         m_cam_ptr->AutoExposureGainLowerLimit = m_cam_settings.min_gain;
-      }
-      else
-      {
+      } else {
         m_cam_ptr->Gain.SetValue(m_cam_settings.gain);
       }
       // setup gamma
-      if (m_cam_settings.enable_gamma)
-      {
+      if (m_cam_settings.enable_gamma) {
         m_cam_ptr->GammaEnable = true;
         m_cam_ptr->Gamma.SetValue(m_cam_settings.gamma);
-      }
-      else
-      {
+      } else {
         m_cam_ptr->GammaEnable = false;
       }
       // setup trigger parameters
-      if (m_cam_settings.is_triggered)
-      {
+      if (m_cam_settings.is_triggered) {
         m_cam_ptr->TriggerMode = TriggerMode_Off;
         m_cam_ptr->TriggerSource = TriggerSource_Line0;
         // m_cam_ptr->TriggerSource = TriggerSource_Line1;
@@ -280,9 +255,7 @@ class blackfly_camera
         m_cam_ptr->AcquisitionFrameRateEnable = false;
         // m_cam_ptr->Counter = ;
         m_cam_ptr->TriggerDelay.SetValue(m_cam_settings.trigger_delay);
-      }
-      else
-      {
+      } else {
         m_cam_ptr->TriggerMode = TriggerMode_Off;
         m_cam_ptr->AcquisitionFrameRateEnable = true;
         m_cam_ptr->AcquisitionFrameRate = m_cam_settings.fps;
@@ -291,16 +264,14 @@ class blackfly_camera
       set_buffer_size(5);
 
       // Device Link Throughput Limit setting
-      CIntegerPtr ptrDeviceLinkThroughputLimit = m_cam_ptr->GetNodeMap().GetNode("DeviceLinkThroughputLimit");
-      if (!IsAvailable(ptrDeviceLinkThroughputLimit) || !IsWritable(ptrDeviceLinkThroughputLimit))
-      {
-          std::cout << "Unable to set device link throughput limit (node retrieval; camera " << m_cam_settings.cam_name << "). Aborting..."
-                << std::endl;
+      CIntegerPtr ptrDeviceLinkThroughputLimit =
+        m_cam_ptr->GetNodeMap().GetNode("DeviceLinkThroughputLimit");
+      if (!IsAvailable(ptrDeviceLinkThroughputLimit) || !IsWritable(ptrDeviceLinkThroughputLimit)) {
+        std::cout << "Unable to set device link throughput limit (node retrieval; camera "
+                  << m_cam_settings.cam_name << "). Aborting..." << std::endl;
       }
       ptrDeviceLinkThroughputLimit->SetValue(m_cam_settings.device_link_throughput_limit);
-    }
-    catch (Spinnaker::Exception &ex)
-    {
+    } catch (Spinnaker::Exception & ex) {
       ROS_ERROR("ERROR SETTING CAMERA SETTINGS!!!");
       std::cout << "Error: " << ex.what() << std::endl;
       std::cout << "Error code " << ex.GetError() << " raised in function " << ex.GetFunctionName()
@@ -308,15 +279,15 @@ class blackfly_camera
     }
   }
 
- private:
+private:
   size_t total_size = sizeof(int8_t) * 1024;
-  void *user_buffer = malloc(total_size);
+  void * user_buffer = malloc(total_size);
   // void* buffer = nullptr;
   CameraPtr m_cam_ptr;
   camera_settings m_cam_settings;
-  ImageEventHandlerImpl *m_image_event_handler_ptr;
-  DeviceEventHandlerImpl *m_device_event_handler_ptr;
-  image_transport::ImageTransport *m_image_transport_ptr;
+  ImageEventHandlerImpl * m_image_event_handler_ptr;
+  DeviceEventHandlerImpl * m_device_event_handler_ptr;
+  image_transport::ImageTransport * m_image_transport_ptr;
   image_transport::CameraPublisher m_cam_pub;
   boost::shared_ptr<camera_info_manager::CameraInfoManager> m_cam_info_mgr_ptr;
 };
