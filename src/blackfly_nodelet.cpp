@@ -185,7 +185,9 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig & config, ui
   camList[config.cam_id]->AcquisitionFrameRate = config.fps;
   // gamma
   camList[config.cam_id]->GammaEnable = config.enable_gamma;
-  camList[config.cam_id]->Gamma.SetValue(config.gamma);
+  if (config.enable_gamma) {
+    camList[config.cam_id]->Gamma.SetValue(config.gamma);
+  }
 
   switch (config.exposure_auto) {
     case 0:
@@ -199,6 +201,10 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig & config, ui
       camList[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Continuous);
       break;
   }
+  if (config.exposure_auto != 0) {
+    camList[config.cam_id]->AutoExposureExposureTimeLowerLimit = config.min_exposure_time;
+    camList[config.cam_id]->AutoExposureExposureTimeUpperLimit = config.max_exposure_time;
+  }
   switch (config.gain_auto) {
     case 0:
       camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Off);
@@ -210,6 +216,10 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig & config, ui
     default:
       camList[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Continuous);
       break;
+  }
+  if (config.gain_auto != 0) {
+    camList[config.cam_id]->AutoExposureGainLowerLimit = config.min_gain;
+    camList[config.cam_id]->AutoExposureGainUpperLimit = config.max_gain;
   }
 
   switch (config.lighting_mode) {
@@ -226,15 +236,17 @@ void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig & config, ui
         AutoExposureLightingModeEnums::AutoExposureLightingMode_Normal);
       break;
   }
-  switch (config.auto_exposure_priority) {
-    case 1:
-      camList[config.cam_id]->AutoExposureControlPriority.SetValue(
-        AutoExposureControlPriorityEnums::AutoExposureControlPriority_ExposureTime);
-      break;
-    default:
-      camList[config.cam_id]->AutoExposureControlPriority.SetValue(
-        AutoExposureControlPriorityEnums::AutoExposureControlPriority_Gain);
-      break;
+  if (config.exposure_auto != 0 && config.gain_auto != 0) {
+    switch (config.auto_exposure_priority) {
+      case 1:
+        camList[config.cam_id]->AutoExposureControlPriority.SetValue(
+          AutoExposureControlPriorityEnums::AutoExposureControlPriority_ExposureTime);
+        break;
+      default:
+        camList[config.cam_id]->AutoExposureControlPriority.SetValue(
+          AutoExposureControlPriorityEnums::AutoExposureControlPriority_Gain);
+        break;
+    }
   }
 
   if (config.acquisition_stop) {
