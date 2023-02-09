@@ -34,7 +34,8 @@ public:
   ImageEventHandlerImpl(
     std::string p_cam_name, CameraPtr p_cam_ptr, image_transport::CameraPublisher * p_cam_pub_ptr,
     boost::shared_ptr<camera_info_manager::CameraInfoManager> p_c_info_mgr_ptr,
-    DeviceEventHandlerImpl * p_device_event_handler_ptr, bool p_exp_time_comp_flag)
+    DeviceEventHandlerImpl * p_device_event_handler_ptr, bool p_exp_time_comp_flag,
+    std::shared_ptr<std::deque<std_msgs::Header>> p_time_stamp_deque_ptr)
   {
     m_cam_name = p_cam_name;
     m_cam_ptr = p_cam_ptr;
@@ -43,6 +44,7 @@ public:
     m_device_event_handler_ptr = p_device_event_handler_ptr;
     m_last_image_stamp = ros::Time(0, 0);
     m_exp_time_comp_flag = p_exp_time_comp_flag;
+    m_time_stamp_deque_ptr = p_time_stamp_deque_ptr;
     image_msg = boost::make_shared<sensor_msgs::Image>();
     // config_all_chunk_data();
   }
@@ -50,6 +52,11 @@ public:
   void OnImageEvent(ImagePtr image)
   {
     ros::Time image_arrival_time = ros::Time::now();
+    ros::Time curr_time = m_time_stamp_deque_ptr->back();
+    m_time_stamp_deque_ptr->pop_back();
+    ros::Duration sampling_time = curr_time - prev_time_;
+    prev_time_ = curr_time;
+    std::cout << sampling_time << std::endl;
     // get the last end of exposure envent from the device event handler (exposure time compensated)
     ros::Time last_event_stamp = m_device_event_handler_ptr->get_last_exposure_end();
     ros::Time image_stamp;
@@ -170,5 +177,8 @@ private:
   std::string m_cam_name;
   ros::Time m_last_image_stamp;
   bool m_exp_time_comp_flag = false;
+
+  ros::Time prev_time_;
+  std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;
 };
 #endif  // IMG_EVENT_HANDLER_IMPL_
