@@ -111,7 +111,7 @@ public:
       nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
     m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
-    m_time_stamp_deque_ptr = std::make_shared<std::deque<ros::Time>>();
+    m_time_stamp_deque_ptr = std::make_shared<std::deque<std_msgs::Header>>();
     time_stamp_sub_ =
       nh.subscribe("/sensor_sync/trigger_1", 10, &blackfly_camera::trigger_stamp_cb, this);
 
