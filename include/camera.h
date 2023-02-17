@@ -111,9 +111,9 @@ public:
       nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
     m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
-    m_time_stamp_deque_ptr = std::make_shared<std::deque<ros::Time>>();
-    time_stamp_sub_ =
-      nh.subscribe("/sensor_sync/trigger_1", 10, &blackfly_camera::trigger_stamp_cb, this);
+    m_time_stamp_deque_ptr = std::make_shared<std::deque<std_msgs::Header>>();
+    sub_time_stamp_ =
+      nh.subscribe("/sensor_sync/trigger_1", 10, &blackfly_camera::TriggerStampCallback, this);
 
     // setup the camera
     setup_camera();
@@ -284,7 +284,13 @@ public:
   }
 
 private:
-  void trigger_stamp_cb(const std_msgs::HeaderPtr msg) { m_time_stamp_deque_ptr->push_back(*msg); }
+  void TriggerStampCallback(const std_msgs::HeaderPtr msg)
+  {
+    if (!m_time_stamp_deque_ptr->empty()) {
+      m_time_stamp_deque_ptr->pop_front();
+    }
+    m_time_stamp_deque_ptr->push_back(*msg);
+  }
 
   size_t total_size = sizeof(int8_t) * 1024;
   void * user_buffer = malloc(total_size);
@@ -297,6 +303,6 @@ private:
   image_transport::CameraPublisher m_cam_pub;
   boost::shared_ptr<camera_info_manager::CameraInfoManager> m_cam_info_mgr_ptr;
 
-  ros::Subscriber time_stamp_sub_;
+  ros::Subscriber sub_time_stamp_;
   std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;
 };

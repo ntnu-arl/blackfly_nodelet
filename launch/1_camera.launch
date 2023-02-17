@@ -2,20 +2,19 @@
 
   <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen" />
 
-  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet"
-  args="load blackfly/blackfly_nodelet nodelet_manager"  clear_params="true" output="screen">
+  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" clear_params="true" output="screen">
 
     <!-- Serial Numbers of Cameras -->
-    <rosparam param="camera_serial_nums">["19061688"]</rosparam>
+    <rosparam param="camera_serial_nums">["21290732"]</rosparam>
     <!-- Names of Cameras (used for topic names, etc) -->
     <rosparam param="camera_names">["cam0"]</rosparam>
     <!-- Paths to Camera info files -->
-    <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_1.info"]</rosparam>
+    <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_0.info"]</rosparam>
 
     <!-- Publish Mono Images Flag : True = Mono8, False = BGR8 -->
     <rosparam param="mono_flags">[false]</rosparam>
     <!-- Is the camera triggered? True = Line0, False = FrameRate -->
-    <rosparam param="is_triggered_flags">[false]</rosparam>
+    <rosparam param="is_triggered_flags">[true]</rosparam>
     <!-- Time in microseconds between when the camera receives a trigger and
     when exposure begins for the image  -->
     <rosparam param="trigger_delays">[13.0]</rosparam>
@@ -25,7 +24,7 @@
     <!-- Use Auto Exposure flag -->
     <rosparam param="is_auto_exp_flags">[true]</rosparam>
     <!-- Auto Exposure Bounds if using Auto Exposure (uSecs) -->
-    <rosparam param="max_auto_exp">     [30000.0]</rosparam>
+    <rosparam param="max_auto_exp">     [10000.0]</rosparam>
     <rosparam param="min_auto_exp">     [50.0]</rosparam>
     <!-- Fixed Exposure if not Auto (uSecs) -->
     <rosparam param="fixed_exp">        [20000.0]</rosparam>
@@ -57,6 +56,6 @@
     <rosparam param="device_link_throughput_limits">     [40325200]</rosparam>
 
     <!-- Enable Dynamic Reconfigure -->
-    <rosparam param="enable_dyn_reconf">  true</rosparam>
+    <rosparam param="enable_dyn_reconf">  false</rosparam>
   </node>
 </launch>
