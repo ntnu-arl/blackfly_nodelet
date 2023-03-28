@@ -52,6 +52,11 @@ public:
   void OnImageEvent(ImagePtr image)
   {
     ros::Time image_arrival_time = ros::Time::now();
+    ros::Time curr_time = m_time_stamp_deque_ptr->back().stamp;
+    m_time_stamp_deque_ptr->pop_back();
+    ros::Duration sampling_time = curr_time - prev_time_;
+    prev_time_ = curr_time;
+    std::cout << sampling_time << std::endl;
     // get the last end of exposure envent from the device event handler (exposure time compensated)
     ros::Time last_event_stamp = m_device_event_handler_ptr->get_last_exposure_end();
     ros::Time image_stamp;
