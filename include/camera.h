@@ -287,7 +287,7 @@ private:
   void TriggerStampCallback(const std_msgs::HeaderPtr msg)
   {
     if (!m_time_stamp_deque_ptr->empty()) {
-      m_time_stamp_deque_ptr->pop_front();
+      m_time_stamp_deque_ptr->pop_back();  // should only be one extra if any
     }
     m_time_stamp_deque_ptr->push_back(*msg);
   }
