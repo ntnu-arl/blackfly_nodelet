@@ -129,9 +129,6 @@ public:
     m_cam_ptr->RegisterEventHandler(*m_image_event_handler_ptr);
 
     m_cam_ptr->BeginAcquisition();
-
-    // set ready param
-    ros::param::set(ros::this_node::getName() + node_ready_param_name_, true);
   }
   ~blackfly_camera()
   {
@@ -144,8 +141,6 @@ public:
       m_cam_ptr->DeInit();
       std::free(user_buffer);
     }
-
-    ros::param::del(ros::this_node::getName() + node_ready_param_name_);
   }
   // This function sets the internal buffersize of spinnaker -> By default it allocates memory based
   // on the frame rate of the camera. This may require very large memory when using multiple
@@ -307,8 +302,6 @@ private:
   image_transport::ImageTransport * m_image_transport_ptr;
   image_transport::CameraPublisher m_cam_pub;
   boost::shared_ptr<camera_info_manager::CameraInfoManager> m_cam_info_mgr_ptr;
-
-  const std::string node_ready_param_name_{"/ready"};
 
   ros::Subscriber sub_time_stamp_;
   std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;

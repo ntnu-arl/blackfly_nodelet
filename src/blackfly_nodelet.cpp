@@ -21,6 +21,7 @@ blackfly_nodelet::~blackfly_nodelet()
   // Release system
   camList.Clear();
   system->ReleaseInstance();
+  ros::param::del(ros::NodeHandle::resolveName("") + node_ready_param_name_);
 }
 void blackfly_nodelet::onInit()
 {
@@ -166,6 +167,12 @@ void blackfly_nodelet::onInit()
     ROS_INFO(
       "Successfully launched camera : %s, Serial : %s", settings.cam_name.c_str(),
       camera_serials[i].c_str());
+
+    // set ready param
+    std::cout << pnh.resolveName() << '\n'
+              << nodelet::Nodelet::getName() << '\n'
+              << ros::NodeHandle::resolveName() << '\n';
+    ros::param::set(pnh.resolveName("") + node_ready_param_name_, true);
   }
 
   if (enable_dyn_reconf) {

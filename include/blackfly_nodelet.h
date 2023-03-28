@@ -68,6 +68,8 @@ private:
   // dynamic reconfigure
   dynamic_reconfigure::Server<blackfly::BlackFlyConfig> * dr_srv;
   dynamic_reconfigure::Server<blackfly::BlackFlyConfig>::CallbackType dyn_rec_cb;
+
+  const std::string node_ready_param_name_{"/ready"};
 };
 }  // namespace blackfly
 #endif  // BLACKFLYNODELET_
