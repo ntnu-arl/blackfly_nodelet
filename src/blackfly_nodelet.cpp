@@ -21,7 +21,7 @@ blackfly_nodelet::~blackfly_nodelet()
   // Release system
   camList.Clear();
   system->ReleaseInstance();
-  ros::param::del(ros::NodeHandle::resolveName("") + node_ready_param_name_);
+  ros::param::del(nodelet::Nodelet::getName() + node_ready_param_name_);
 }
 void blackfly_nodelet::onInit()
 {
@@ -167,12 +167,6 @@ void blackfly_nodelet::onInit()
     ROS_INFO(
       "Successfully launched camera : %s, Serial : %s", settings.cam_name.c_str(),
       camera_serials[i].c_str());
-
-    // set ready param
-    std::cout << pnh.resolveName() << '\n'
-              << nodelet::Nodelet::getName() << '\n'
-              << ros::NodeHandle::resolveName() << '\n';
-    ros::param::set(pnh.resolveName("") + node_ready_param_name_, true);
   }
 
   if (enable_dyn_reconf) {
@@ -182,6 +176,9 @@ void blackfly_nodelet::onInit()
     dr_srv->setCallback(dyn_rec_cb);
   }
   ROS_INFO("Successfully launched all cameras.");
+
+  // set ready param
+  ros::param::set(nodelet::Nodelet::getName() + node_ready_param_name_, true);
 }
 
 void blackfly_nodelet::callback_dyn_reconf(blackfly::BlackFlyConfig & config, uint32_t level)

@@ -79,9 +79,12 @@ public:
       // prev_time_ = curr_time;
       // std::cout << sampling_time << std::endl;
     } else {
-      image_stamp = ros::Time(0);
+      // image_stamp = ros::Time(0);
       ROS_WARN("image without trigger");
+      image->Release();
+      return;
     }
+
     if (m_exp_time_comp_flag) {
       // get the exposure time
       double exp_time = double(m_cam_ptr->ExposureTime.GetValue());
