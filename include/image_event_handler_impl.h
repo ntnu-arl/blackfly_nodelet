@@ -35,7 +35,8 @@ public:
     std::string p_cam_name, CameraPtr p_cam_ptr, image_transport::CameraPublisher * p_cam_pub_ptr,
     boost::shared_ptr<camera_info_manager::CameraInfoManager> p_c_info_mgr_ptr,
     DeviceEventHandlerImpl * p_device_event_handler_ptr, bool p_exp_time_comp_flag,
-    std::shared_ptr<std::deque<std_msgs::Header>> p_time_stamp_deque_ptr)
+    std::shared_ptr<std::deque<std_msgs::Header>> p_time_stamp_deque_ptr,
+    ros::Publisher * p_stamp_pub_ptr)
   {
     m_cam_name = p_cam_name;
     m_cam_ptr = p_cam_ptr;
@@ -47,6 +48,8 @@ public:
     m_time_stamp_deque_ptr = p_time_stamp_deque_ptr;
     image_msg = boost::make_shared<sensor_msgs::Image>();
     // config_all_chunk_data();
+
+    m_stamp_pub_ptr = p_stamp_pub_ptr;
   }
   ~ImageEventHandlerImpl() { m_cam_ptr = nullptr; }
   void OnImageEvent(ImagePtr image)
@@ -70,6 +73,8 @@ public:
         "Blackfly Nodelet: Image retrieval failed: image incomplete for %s", m_cam_name.c_str());
       return;
     }
+    std_msgs::Header ros_time_now;
+    ros_time_now.stamp = image_stamp;
 
     if (!m_time_stamp_deque_ptr->empty()) {
       // ros::Time curr_time = m_time_stamp_deque_ptr->back().stamp;
@@ -94,7 +99,10 @@ public:
       exp_time /= 2.0;
       // subtract from the end of exposure time to get the middle of the exposure
       image_stamp -= ros::Duration(exp_time);
+      ros_time_now.stamp -= ros::Duration(exp_time);
     }
+    m_stamp_pub_ptr->publish(ros_time_now);
+
     if (m_cam_pub_ptr->getNumSubscribers() > 0) {
       int height = image->GetHeight();
       int width = image->GetWidth();
@@ -190,5 +198,6 @@ private:
 
   ros::Time prev_time_;
   std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;
+  ros::Publisher * m_stamp_pub_ptr;
 };
 #endif  // IMG_EVENT_HANDLER_IMPL_

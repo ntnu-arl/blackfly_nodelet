@@ -114,6 +114,7 @@ public:
     m_time_stamp_deque_ptr = std::make_shared<std::deque<std_msgs::Header>>();
     sub_time_stamp_ =
       nh.subscribe("/sensor_sync/trigger_1", 10, &blackfly_camera::TriggerStampCallback, this);
+    pub_time_stamp_ = nh.advertise<std_msgs::Header>("ros_time_now", 10, false);
 
     // setup the camera
     setup_camera();
@@ -122,7 +123,8 @@ public:
     m_device_event_handler_ptr = new DeviceEventHandlerImpl(m_cam_ptr);
     m_image_event_handler_ptr = new ImageEventHandlerImpl(
       m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr,
-      m_device_event_handler_ptr, m_cam_settings.exp_comp_flag, m_time_stamp_deque_ptr);
+      m_device_event_handler_ptr, m_cam_settings.exp_comp_flag, m_time_stamp_deque_ptr,
+      &pub_time_stamp_);
 
     // register event handlers
     m_cam_ptr->RegisterEventHandler(*m_device_event_handler_ptr);
@@ -305,4 +307,5 @@ private:
 
   ros::Subscriber sub_time_stamp_;
   std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;
+  ros::Publisher pub_time_stamp_;
 };
