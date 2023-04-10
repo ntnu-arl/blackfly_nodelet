@@ -98,7 +98,7 @@ public:
       // get half the exposure time
       exp_time /= 2.0;
       // subtract from the end of exposure time to get the middle of the exposure
-      image_stamp -= ros::Duration(exp_time);
+      image_stamp += ros::Duration(exp_time);  // add to trigger stamp
       ros_time_now.stamp -= ros::Duration(exp_time);
     }
     m_stamp_pub_ptr->publish(ros_time_now);
