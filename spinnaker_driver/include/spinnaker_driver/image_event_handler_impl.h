@@ -6,23 +6,24 @@
 
 #ifndef IMG_EVENT_HANDLER_IMPL_
 #define IMG_EVENT_HANDLER_IMPL_
+
+// ROS
+#include <ros/ros.h>
+#include <nodelet/nodelet.h>
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/fill_image.h>
-
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
-
 #include <pluginlib/class_list_macros.h>
 
-#include "Spinnaker.h"
-#include "SpinGenApi/SpinnakerGenApi.h"
+// Spinnaker
+#include <Spinnaker.h>
+#include <SpinGenApi/SpinnakerGenApi.h>
 
-#include <ros/ros.h>
-#include <nodelet/nodelet.h>
-
-#include "device_event_handler_impl.h"
+// spinnaker_driver
+#include "spinnaker_driver/device_event_handler_impl.h"
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;

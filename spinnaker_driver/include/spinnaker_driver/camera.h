@@ -4,16 +4,23 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. 
 
+// C++
 #include <vector>
 #include <string>
+
+// ROS
 #include <ros/ros.h>
 #include <nodelet/nodelet.h>
-#include "Spinnaker.h"
-#include "image_event_handler_impl.h"
-#include "device_event_handler_impl.h"
 #include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
+
+// Spinnaker
+#include <Spinnaker.h>
+
+// spinnaker_driver
+#include "spinnaker_driver/image_event_handler_impl.h"
+#include "spinnaker_driver/device_event_handler_impl.h"
 
 using namespace Spinnaker;
 

@@ -4,7 +4,8 @@
 // This source code is licensed under the BSD-style license found in the
 // LICENSE file in the root directory of this source tree. 
 
-#include "../include/blackfly_nodelet.h"
+
+#include "spinnaker_driver/blackfly_nodelet.h"
 
 // Nodelet stuff
 #include <pluginlib/class_list_macros.h>
@@ -138,6 +139,7 @@ namespace blackfly
       try
       {
         ROS_DEBUG("Camera Serial : #%s", camera_serials[i].c_str());
+
 
         cam_ptr = camList.GetBySerial(camera_serials[i]);
         if (!cam_ptr->IsValid())

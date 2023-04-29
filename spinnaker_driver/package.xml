@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>blackfly</name>
+  <name>spinnaker_driver</name>
   <version>1.0.0</version>
-  <description>The blackfly driver</description>
+  <description>A driver for cameras using the Spinnaker SDK from Flir</description>
 
   <maintainer email="fmascarich@nevada.unr.edu">Frank Mascarich</maintainer>
   <maintainer email="nikhil.v.khedekar@ntnu.no">Nikhil Khedekar</maintainer>

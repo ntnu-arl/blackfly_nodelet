@@ -1,6 +1,6 @@
-# blackfly_nodelet
+# spinnaker_driver
 
-Simple ROS driver wrapping the Spinnaker API for Blackfly Cameras.
+Simple ROS driver wrapping the Spinnaker SDK
 
 ## Setup
 
