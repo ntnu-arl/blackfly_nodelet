@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 project(spinnaker_driver)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -36,28 +36,20 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-# Create the nodelet spinnaker_driver library
-add_library(${PROJECT_NAME}_nodelet
-  src/blackfly_nodelet.cpp
+add_library(spinnaker_driver
+src/spinnaker_driver.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}_nodelet
+target_link_libraries(spinnaker_driver
   ${Spinnaker_LIBRARIES}
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
 )
 
-add_dependencies(${PROJECT_NAME}_nodelet
-  ${catkin_EXPORTED_TARGETS}
-  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+add_executable(spinnaker_driver_node
+  src/spinnaker_driver_node.cpp
 )
 
-# # Mark the nodelet library for installations
-install(TARGETS ${PROJECT_NAME}_nodelet
-  DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-
-# # Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES nodelet_plugins.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-install(DIRECTORY launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+target_link_libraries(spinnaker_driver_node
+  spinnaker_driver
+)

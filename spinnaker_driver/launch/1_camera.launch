@@ -1,15 +1,13 @@
 <launch>
-  
-  <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen" />
 
-  <node pkg="nodelet" type="nodelet" name="blackfly_nodelet" args="load blackfly/blackfly_nodelet nodelet_manager" clear_params="true" output="screen">
+  <node pkg="spinnaker_driver" type="spinnaker_driver_node" name="spinnaker_driver_node" clear_params="true" output="screen">
 
     <!-- Serial Numbers of Cameras -->
-    <rosparam param="camera_serial_nums">["21290732"]</rosparam>
+    <rosparam param="camera_serial_nums">["19423295"]</rosparam>
     <!-- Names of Cameras (used for topic names, etc) -->
     <rosparam param="camera_names">["cam0"]</rosparam>
     <!-- Paths to Camera info files -->
-    <rosparam param="camera_info_paths">["package://blackfly/camera_info/cam_1.info"]</rosparam>
+    <rosparam param="camera_info_paths">["package://spinnaker_driver/camera_info/cam_1.info"]</rosparam>
 
     <!-- Publish Mono Images Flag : True = Mono8, False = BGR8 -->
     <rosparam param="mono_flags">[true]</rosparam>
