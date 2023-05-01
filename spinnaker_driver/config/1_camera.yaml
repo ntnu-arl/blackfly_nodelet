@@ -51,8 +51,10 @@ exp_comp_flags: [true]
 # 0 Normal / 1 backlight / 2 Frontlight
 lighting_mode: [0]
 
-# Device Link Throughput Limits for Ethernet Cameras
-device_link_throughput_limits: [40325200]
+# Device Link Throughput Limits
+# GigE Cameras: 40325200
+# USB3 Cameras: 355439393
+device_link_throughput_limits: [355439393] 
 
 # Enable Dynamic Reconfigure
 enable_dyn_reconf: false
