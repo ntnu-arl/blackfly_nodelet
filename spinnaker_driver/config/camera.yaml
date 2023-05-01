@@ -1,3 +1,7 @@
+# Note that all parameters in this file are lists, for multiple cameras
+# simply add more elements to each list ensuring that the order of the
+# parameters is maintained
+
 # Serial Numbers of Cameras
 camera_serial_nums: ["19423295"]
 # Names of Cameras (used for topic names, etc)
@@ -6,7 +10,7 @@ camera_names: ["cam0"]
 camera_info_paths: ["package://spinnaker_driver/camera_info/blackfly.yaml"]
 
 # Publish Mono Images Flag : True = Mono8, False = BGR8
-mono_flags: [true]
+mono_flags: [false]
 
 # Is the camera triggered? True = Line0, False = FrameRate
 is_triggered_flags: [false]
@@ -57,6 +61,3 @@ lighting_mode: [0]
 # GigE Cameras: 40325200
 # USB3 Cameras: 355439393
 device_link_throughput_limits: [355439393] 
-
-# Enable Dynamic Reconfigure
-enable_dyn_reconf: false
