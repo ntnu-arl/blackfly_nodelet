@@ -59,7 +59,7 @@ The parameters in the `config/camera.yaml` file are lists. So for multiple camer
 3. If the framerate is lower than expected, check the usb-fs memory size using
 
     ```bash
-    cat /sys/module/usbcore/parameters/usbfs_memory_mb  
+    cat /sys/module/usbcore/parameters/usbfs_memory_mb
     ```
 
     If this value is < 1024, set it >= 1024 by changing `/etc/default/grub` from
@@ -71,7 +71,7 @@ The parameters in the `config/camera.yaml` file are lists. So for multiple camer
     to
 
     ```bash
-    GRUB_CMDLINE_LINUX_DEFAULT="quiet splash usbcore.usbfs_memory_mb=32768"  
+    GRUB_CMDLINE_LINUX_DEFAULT="quiet splash usbcore.usbfs_memory_mb=32768"
     ```
 
     and then run
@@ -83,7 +83,7 @@ The parameters in the `config/camera.yaml` file are lists. So for multiple camer
     and finally restart the system and check that the value has been set correctly using
 
     ```bash
-    cat /sys/module/usbcore/parameters/usbfs_memory_mb  
+    cat /sys/module/usbcore/parameters/usbfs_memory_mb
     ```
 
 4. It is recommended to use a 330 Ohm or lower value resistor to connect the OptoIn to the trigger signal.

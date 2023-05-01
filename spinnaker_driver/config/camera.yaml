@@ -60,4 +60,4 @@ lighting_mode: [0]
 # Device Link Throughput Limits
 # GigE Cameras: 40325200
 # USB3 Cameras: 355439393
-device_link_throughput_limits: [355439393] 
+device_link_throughput_limits: [355439393]

@@ -8,8 +8,8 @@
 #define SPINNAKER_DRIVER_IMAGE_EVENT_HANDLER_IMPL_HPP_
 
 // ROS
-#include <ros/ros.h>
 #include <image_transport/image_transport.h>
+#include <ros/ros.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/fill_image.h>
@@ -90,8 +90,7 @@ public:
           image_msg_, sensor_msgs::image_encodings::BGR8, height, width, stride, image->GetData());
       } else if (pix_format == PixelFormat_Mono8) {
         sensor_msgs::fillImage(
-          image_msg_, sensor_msgs::image_encodings::MONO8, height, width, stride,
-          image->GetData());
+          image_msg_, sensor_msgs::image_encodings::MONO8, height, width, stride, image->GetData());
       } else {
         ROS_ERROR("Unknown pixel format");
         return;

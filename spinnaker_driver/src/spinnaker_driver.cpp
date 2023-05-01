@@ -148,10 +148,7 @@ SpinnakerDriver::SpinnakerDriver(ros::NodeHandle & pnh)
   ROS_INFO("Successfully launched all cameras.");
 }
 
-SpinnakerDriver::~SpinnakerDriver()
-{
-  teardown();
-}
+SpinnakerDriver::~SpinnakerDriver() { teardown(); }
 
 void SpinnakerDriver::teardown()
 {
