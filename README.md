@@ -8,17 +8,19 @@ Simple ROS driver wrapping the Spinnaker SDK
 
 1. Download the [Spinnaker SDK from FLIR](https://www.flir.eu/products/spinnaker-sdk/) as per your distribution and architecture (Note: this driver has only been tested on Linux variants)
 2. Unzip it and go through the README for installation instructions for your system
-3. If Spinnaker is installed in a custom location, you will need to include the path to it in the [FindSpinnaker.cmake](cmake/FindSpinnaker.cmake)
+3. If Spinnaker is installed in a custom location, you will need to include the path to it in the [FindSpinnaker.cmake](spinnaker_driver/cmake/FindSpinnaker.cmake)
 
 #### Notes
 
-1. This branch is only compatible with Spinnaker 2.x as noted in the table below. Switch to the `spinnaker1` branch for Spinnaker 1.x.
+1. This branch is only compatible with Spinnaker 2.x+ as noted in the table below. Switch to the `spinnaker1` branch for Spinnaker 1.x.
    * Ubuntu 20.04:
-      | Version   | amd64                       |
-      | :-------- | :-------------------------- |
-      | 2.5.0.80  | Y                           |
-      | 2.4.0.143 | Y                           |
-      | 2.0.0.109 | N - Use `spinnaker1` branch |
+      | Version   | amd64                       | arm64                        |
+      | :-------- | :-------------------------- | :--------------------------- |
+      | 3.0.0.118 | Y                           | U                            |
+      | 2.5.0.80  | Y                           | U                            |
+      | 2.4.0.143 | Y                           | U                            |
+      | 2.0.0.109 | N - Use `spinnaker1` branch | U                            |
+    Y- Yes, N- No, U- Untested
 2. The machine may need to be rebooted after installing spinnaker
 3. Make sure to accept the increase in the usb-fs memory - if this is a small value, the camera may only work at a low frame rate
 
