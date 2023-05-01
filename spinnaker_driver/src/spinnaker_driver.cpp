@@ -139,7 +139,7 @@ SpinnakerDriver::SpinnakerDriver(ros::NodeHandle & pnh)
 
     ROS_DEBUG("Created Camera Settings Object");
 
-    cameras_.push_back(std::make_unique<Camera>(settings, camera_ptr));
+    cameras_.push_back(std::make_unique<Camera>(settings, camera_ptr, pnh));
     ROS_INFO(
       "Successfully launched camera : %s, Serial : %s", settings.cam_name.c_str(),
       camera_serials[i].c_str());

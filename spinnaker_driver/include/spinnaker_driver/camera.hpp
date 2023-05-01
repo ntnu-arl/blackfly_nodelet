@@ -104,19 +104,16 @@ struct CameraSettings
 class Camera
 {
  public:
-  Camera(CameraSettings settings, CameraPtr cam_ptr)
+  Camera(CameraSettings settings, CameraPtr cam_ptr, ros::NodeHandle & pnh)
   {
     // save the camera pointer and the settings object
     settings_ = settings;
     cam_ptr_ = cam_ptr;
 
-    // create a new node handle
-    ros::NodeHandle nh(settings_.cam_name);
-
     // setup ros image transport
-    it_ = std::make_unique<image_transport::ImageTransport>(nh);
-    cam_pub_ = it_->advertiseCamera(settings_.cam_name, 10);
-    camera_info_manager::CameraInfoManager cam_info_mgr(nh, settings_.cam_name, settings_.cam_info_path);
+    it_ = std::make_unique<image_transport::ImageTransport>(pnh);
+    cam_pub_ = it_->advertiseCamera(settings_.cam_name + "/image", 10);
+    camera_info_manager::CameraInfoManager cam_info_mgr(pnh, settings_.cam_name, settings_.cam_info_path);
     cam_info_mgr.loadCameraInfo(settings_.cam_info_path);
     sensor_msgs::CameraInfo cam_info_msg  = cam_info_mgr.getCameraInfo();
 
