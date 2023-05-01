@@ -2,6 +2,13 @@
 
 Simple ROS driver wrapping the Spinnaker SDK
 
+## TODO
+
+- [ ] Re-add nodeletization
+- [ ] Re-add dynamic reconfigure
+- [ ] Check compatibility with other spinnaker versions
+- [ ] Check compatibility on ARM
+
 ## Setup
 
 ### Spinnaker SDK
