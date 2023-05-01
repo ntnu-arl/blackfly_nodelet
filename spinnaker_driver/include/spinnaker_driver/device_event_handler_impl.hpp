@@ -8,10 +8,7 @@
 #define SPINNAKER_DRIVER_DEVICE_EVENT_HANDLER_HPP_
 
 // C++
-#include <deque>
-#include <iostream>
 #include <mutex>
-#include <sstream>
 
 // ROS
 #include <ros/ros.h>

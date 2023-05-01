@@ -8,10 +8,7 @@
 #define SPINNAKER_DRIVER_IMAGE_EVENT_HANDLER_IMPL_HPP_
 
 // ROS
-#include <camera_info_manager/camera_info_manager.h>
 #include <image_transport/image_transport.h>
-#include <nodelet/nodelet.h>
-#include <pluginlib/class_list_macros.h>
 #include <ros/ros.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
