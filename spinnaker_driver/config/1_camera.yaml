@@ -1,0 +1,58 @@
+# Serial Numbers of Cameras
+camera_serial_nums: ["19423295"]
+# Names of Cameras (used for topic names, etc)
+camera_names: ["cam0"]
+# Paths to Camera info files
+camera_info_paths: ["package://spinnaker_driver/camera_info/blackfly.yaml"]
+
+# Publish Mono Images Flag : True = Mono8, False = BGR8
+mono_flags: [true]
+
+# Is the camera triggered? True = Line0, False = FrameRate
+is_triggered_flags: [false]
+# Time in microseconds between when the camera receives a trigger and when exposure begins for the image
+trigger_delays: [13.0]
+# Frame Rate if not triggered
+fps: [20.0]
+
+# Use Auto Exposure flag
+is_auto_exp_flags: [true]
+# Auto Exposure Bounds if using Auto Exposure (uSecs)
+max_auto_exp: [10000.0]
+# Auto Exposure Bounds if using Auto Exposure (uSecs)
+min_auto_exp: [50.0]
+# Fixed Exposure if not Auto (uSecs)
+fixed_exp: [10000.0]
+# 0 Gain / 1 ExposureTime
+auto_exposure_priority: [0]
+
+# Use Auto Gain Flag
+auto_gains: [true]
+# Gain Bounds if using Auto Gain
+max_gains: [20.0]
+# Gain Bounds if using Auto Gain
+min_gains: [0.0]
+# Fixed Gain if not Auto Gain
+gains: [5.0]
+
+# Enable Gamma Correction
+enable_gamma: [true]
+# Gamma setting if using Gamma Correction
+gammas: [0.8]
+
+# Binning Value (decimate image resolution by x)
+binnings: [1]
+# 0 Average / 1 Sum
+binning_mode: [1]
+
+# Enable Exposure Time Compensation
+exp_comp_flags: [true]
+
+# 0 Normal / 1 backlight / 2 Frontlight
+lighting_mode: [0]
+
+# Device Link Throughput Limits for Ethernet Cameras
+device_link_throughput_limits: [40325200]
+
+# Enable Dynamic Reconfigure
+enable_dyn_reconf: false
