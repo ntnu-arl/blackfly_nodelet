@@ -5,12 +5,10 @@
 // LICENSE file in the root directory of this source tree. 
 
 // C++
-#include <vector>
 #include <string>
 
 // ROS
 #include <ros/ros.h>
-#include <nodelet/nodelet.h>
 #include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>

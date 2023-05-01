@@ -8,25 +8,10 @@
 #define SPINNAKER_DRIVER_SPINNAKER_DRIVER_HPP_
 
 // C++
-#include <pthread.h>
-#include <time.h>
-#include <string>
 #include <vector>
 
 // ROS
-#include <camera_info_manager/camera_info_manager.h>
-#include <dynamic_reconfigure/server.h>
-#include <image_transport/image_transport.h>
-#include <nodelet/nodelet.h>
-#include <pluginlib/class_list_macros.h>
 #include <ros/ros.h>
-#include <sensor_msgs/CameraInfo.h>
-#include <sensor_msgs/Image.h>
-#include <sensor_msgs/fill_image.h>
-#include <sensor_msgs/image_encodings.h>
-#include <std_msgs/Float64.h>
-#include <std_msgs/Time.h>
-#include <std_msgs/UInt64.h>
 
 // Spinnaker
 #include <SpinGenApi/SpinnakerGenApi.h>
