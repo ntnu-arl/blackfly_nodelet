@@ -144,6 +144,8 @@ class Camera
       cam_ptr_->DeInit();
       std::free(user_buffer_);
     }
+
+    cam_ptr_ = nullptr;
   }
   // This function sets the internal buffersize of spinnaker -> By default it allocates memory based
   // on the frame rate of the camera. This may require very large memory when using multiple
