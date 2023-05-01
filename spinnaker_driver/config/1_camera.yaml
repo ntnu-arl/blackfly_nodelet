@@ -11,15 +11,17 @@ mono_flags: [true]
 # Is the camera triggered? True = Line0, False = FrameRate
 is_triggered_flags: [false]
 # Time in microseconds between when the camera receives a trigger and when exposure begins for the image
-trigger_delays: [13.0]
+# GigE Cameras: 13.0
+# USB3 Cameras: 24.0
+trigger_delays: [24.0]
 # Frame Rate if not triggered
 fps: [20.0]
 
 # Use Auto Exposure flag
 is_auto_exp_flags: [true]
-# Auto Exposure Bounds if using Auto Exposure (uSecs)
+# Auto Exposure Bounds if using Auto Exposure (max: 3e7 uSecs)
 max_auto_exp: [10000.0]
-# Auto Exposure Bounds if using Auto Exposure (uSecs)
+# Auto Exposure Bounds if using Auto Exposure (min: 12 uSecs)
 min_auto_exp: [50.0]
 # Fixed Exposure if not Auto (uSecs)
 fixed_exp: [10000.0]
@@ -28,9 +30,9 @@ auto_exposure_priority: [0]
 
 # Use Auto Gain Flag
 auto_gains: [true]
-# Gain Bounds if using Auto Gain
+# Gain Bounds if using Auto Gain (max: 47.99 dB)
 max_gains: [20.0]
-# Gain Bounds if using Auto Gain
+# Gain Bounds if using Auto Gain (min: 0.0 dB)
 min_gains: [0.0]
 # Fixed Gain if not Auto Gain
 gains: [5.0]
