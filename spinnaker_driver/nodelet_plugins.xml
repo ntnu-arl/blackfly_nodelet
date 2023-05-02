@@ -1,5 +1,5 @@
-<library path="lib/libblackfly_nodelet">
-  <class name="blackfly/blackfly_nodelet" type="blackfly::blackfly_nodelet" base_class_type="nodelet::Nodelet">
-  <description>This is a blackfly nodelet.</description>
+<library path="lib/libspinnaker_driver_nodelet">
+  <class name="spinnaker_driver/spinnaker_driver_nodelet" type="spinnaker_driver::SpinnakerDriverNodelet" base_class_type="nodelet::Nodelet">
+  <description>The spinnaker_driver nodelet.</description>
   </class>
 </library>

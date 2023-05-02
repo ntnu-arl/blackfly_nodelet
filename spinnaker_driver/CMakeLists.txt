@@ -46,6 +46,14 @@ target_link_libraries(spinnaker_driver
   ${OpenCV_LIBRARIES}
 )
 
+add_library(spinnaker_driver_nodelet
+  src/spinnaker_driver_nodelet.cpp
+)
+
+target_link_libraries(spinnaker_driver_nodelet
+  spinnaker_driver
+)
+
 add_executable(spinnaker_driver_node
   src/spinnaker_driver_node.cpp
 )
