@@ -22,19 +22,17 @@ Simple ROS driver wrapping the Spinnaker SDK
 
 #### Compatibility
 
-1. This branch is only compatible with Spinnaker 2.4+ as noted in the table below. Switch to the `spinnaker1` branch for older versions.
-   * Ubuntu 20.04:
-      | Version   | amd64                       | arm64                        |
-      | :-------- | :-------------------------- | :--------------------------- |
-      | 3.1.0.79  | U                           | U                            |
-      | 3.0.0.118 | Y                           | U                            |
-      | 2.6.0.160 | U                           | U                            |
-      | 2.6.0.157 | U                           | U                            |
-      | 2.6.0.156 | U                           | U                            |
-      | 2.5.0.80  | U                           | U                            |
-      | 2.4.0.143 | U                           | U                            |
-      | 2.0.0.109 | N - Use `spinnaker1` branch | U                            |
-    Y- Yes, N- No, U- Untested
+This branch is only compatible with Spinnaker 2.5.0.80+ as noted in the table below. Switch to the `spinnaker1` branch or check older commits for older versions of the Spinnaker SDK.
+
+- Ubuntu 20.04:
+  | Version   | amd64                       | arm64                        |
+  | :-------- | :-------------------------- | :--------------------------- |
+  | 3.1.0.79  | Y                           | U                            |
+  | 3.0.0.118 | Y                           | U                            |
+  | 2.7.0.128 | Y                           | U                            |
+  | 2.5.0.80  | Y                           | U                            |
+
+  Y- Yes, N- No, U- Untested
 
 ### spinnaker_driver
 
