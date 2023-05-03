@@ -5,11 +5,19 @@ on:
   push:
 
 jobs:
-  build_noetic:
-    runs-on: ubuntu-22.04
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - uses: jspricke/ros-deb-builder-action@main
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up ROS environment
+        uses: ros-tooling/setup-ros@v1
         with:
-          ROS_DISTRO: noetic
-          DEB_DISTRO: focal
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          rosdistro: 'noetic'
+
+      - name: Install package dependencies
+        run: sudo apt-get update && rosdep update && rosdep install --from-paths src --ignore-src -r -y
+
+      - name: Build package
+        run: catkin build
