@@ -80,6 +80,9 @@ SpinnakerDriver::SpinnakerDriver(ros::NodeHandle & pnh)
   std::vector<int> device_link_throughput_limits;
   pnh.getParam("device_link_throughput_limits", device_link_throughput_limits);
 
+  bool enable_dyn_reconf;
+  pnh.getParam("enable_dyn_reconf", enable_dyn_reconf);
+
   // Verify that the number of camera settings match the number of camera names
   int num_cameras_listed = camera_names.size();
   if (
@@ -145,6 +148,15 @@ SpinnakerDriver::SpinnakerDriver(ros::NodeHandle & pnh)
       camera_serials[i].c_str());
   }
 
+  if (enable_dyn_reconf) {
+    ROS_WARN_ONCE("Dynamic Reconfigure Triggered");
+    dynamic_reconfigure::Server<spinnaker_driver::SpinnakerConfig> * dr_srv =
+      new dynamic_reconfigure::Server<spinnaker_driver::SpinnakerConfig>(pnh);
+    dynamic_reconfigure::Server<spinnaker_driver::SpinnakerConfig>::CallbackType dyn_rec_cb =
+      boost::bind(&SpinnakerDriver::dynamicReconfigureCb, this, _1, _2);
+    dr_srv->setCallback(dyn_rec_cb);
+  }
+
   ROS_INFO("Successfully launched all cameras.");
 }
 
@@ -156,4 +168,97 @@ void SpinnakerDriver::teardown()
   camera_list_.Clear();
   system_->ReleaseInstance();
 }
+
+void SpinnakerDriver::dynamicReconfigureCb(
+  spinnaker_driver::SpinnakerConfig & config, uint32_t level)
+{
+  std::cout << "Dynamic Reconfigure triggered" << std::endl;
+
+  // fps
+  camera_list_[config.cam_id]->AcquisitionFrameRate = config.fps;
+  // gamma
+  camera_list_[config.cam_id]->GammaEnable = config.enable_gamma;
+  camera_list_[config.cam_id]->Gamma.SetValue(config.gamma);
+
+  switch (config.exposure_auto) {
+    case 0:
+      camera_list_[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Off);
+      camera_list_[config.cam_id]->ExposureTime = config.exposure_time;
+      break;
+    case 1:
+      camera_list_[config.cam_id]->ExposureAuto.SetValue(ExposureAutoEnums::ExposureAuto_Once);
+      break;
+    default:
+      camera_list_[config.cam_id]->ExposureAuto.SetValue(
+        ExposureAutoEnums::ExposureAuto_Continuous);
+      break;
+  }
+  switch (config.gain_auto) {
+    case 0:
+      camera_list_[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Off);
+      camera_list_[config.cam_id]->Gain = config.gain;
+      break;
+    case 1:
+      camera_list_[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Once);
+      break;
+    default:
+      camera_list_[config.cam_id]->GainAuto.SetValue(GainAutoEnums::GainAuto_Continuous);
+      break;
+  }
+
+  switch (config.lighting_mode) {
+    case 1:
+      camera_list_[config.cam_id]->AutoExposureLightingMode.SetValue(
+        AutoExposureLightingModeEnums::AutoExposureLightingMode_Backlight);
+      break;
+    case 2:
+      camera_list_[config.cam_id]->AutoExposureLightingMode.SetValue(
+        AutoExposureLightingModeEnums::AutoExposureLightingMode_Frontlight);
+      break;
+    default:
+      camera_list_[config.cam_id]->AutoExposureLightingMode.SetValue(
+        AutoExposureLightingModeEnums::AutoExposureLightingMode_Normal);
+      break;
+  }
+  switch (config.auto_exposure_priority) {
+    case 1:
+      camera_list_[config.cam_id]->AutoExposureControlPriority.SetValue(
+        AutoExposureControlPriorityEnums::AutoExposureControlPriority_ExposureTime);
+      break;
+    default:
+      camera_list_[config.cam_id]->AutoExposureControlPriority.SetValue(
+        AutoExposureControlPriorityEnums::AutoExposureControlPriority_Gain);
+      break;
+  }
+
+  if (config.acquisition_stop) {
+    std::cout << "stop trigger" << std::endl;
+    camera_list_[config.cam_id]->AcquisitionStop();
+    camera_list_[config.cam_id]->TLParamsLocked = 0;
+    camera_list_[config.cam_id]->BinningHorizontal = config.binning;
+    camera_list_[config.cam_id]->BinningVertical = config.binning;
+
+    switch (config.binning_mode) {
+      case 0:
+        camera_list_[config.cam_id]->BinningHorizontalMode.SetValue(
+          BinningHorizontalModeEnums::BinningHorizontalMode_Average);
+        camera_list_[config.cam_id]->BinningVerticalMode.SetValue(
+          BinningVerticalModeEnums::BinningVerticalMode_Average);
+        break;
+
+      default:
+        camera_list_[config.cam_id]->BinningHorizontalMode.SetValue(
+          BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
+        camera_list_[config.cam_id]->BinningVerticalMode.SetValue(
+          BinningVerticalModeEnums::BinningVerticalMode_Sum);
+        break;
+    }
+  }
+  if (config.acquisition_start) {
+    std::cout << "start trigger" << std::endl;
+    camera_list_[config.cam_id]->TLParamsLocked = 1;
+    camera_list_[config.cam_id]->AcquisitionStart();
+  }
+}
+
 }  // namespace spinnaker_driver

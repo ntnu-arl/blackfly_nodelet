@@ -22,6 +22,10 @@ message(STATUS "Spinnaker include: ${Spinnaker_INCLUDE_DIRS}")
 # OpenCV
 find_package(OpenCV REQUIRED)
 
+generate_dynamic_reconfigure_options(
+    cfg/Spinnaker.cfg
+)
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES spinnaker_driver

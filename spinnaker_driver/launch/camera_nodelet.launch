@@ -3,6 +3,8 @@
 
   <node pkg="nodelet" type="nodelet" name="spinnaker_driver_nodelet" args="load spinnaker_driver/spinnaker_driver_nodelet nodelet_manager" clear_params="true" output="screen">
     <rosparam command="load" file="$(find spinnaker_driver)/config/camera.yaml"/>
-  </node>
 
+    <!-- Enable Dynamic Reconfigure -->
+    <rosparam param="enable_dyn_reconf">false</rosparam>
+  </node>
 </launch>

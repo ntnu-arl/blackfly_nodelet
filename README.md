@@ -5,7 +5,7 @@ Simple ROS driver wrapping the Spinnaker SDK
 ## TODO
 
 - [X] Re-add nodeletization
-- [ ] Re-add dynamic reconfigure
+- [X] Re-add dynamic reconfigure
 - [ ] Check compatibility with other spinnaker versions
 - [ ] Check compatibility on ARM
 - [ ] Update the build action - perhaps a private repo? (since their license does not allow redistribution)

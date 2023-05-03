@@ -11,6 +11,7 @@
 #include <vector>
 
 // ROS
+#include <dynamic_reconfigure/server.h>
 #include <ros/ros.h>
 
 // Spinnaker
@@ -18,6 +19,7 @@
 #include <Spinnaker.h>
 
 // spinnaker_driver
+#include "spinnaker_driver/SpinnakerConfig.h"
 #include "spinnaker_driver/camera.hpp"
 #include "spinnaker_driver/device_event_handler_impl.hpp"
 #include "spinnaker_driver/image_event_handler_impl.hpp"
@@ -34,6 +36,7 @@ public:
   SpinnakerDriver(ros::NodeHandle & pnh);
   ~SpinnakerDriver();
   void teardown();
+  void dynamicReconfigureCb(spinnaker_driver::SpinnakerConfig & config, uint32_t level);
 
 private:
   SystemPtr system_;
