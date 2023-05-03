@@ -27,10 +27,10 @@ This branch is only compatible with Spinnaker 2.5.0.80+ as noted in the table be
 - Ubuntu 20.04:
   | Version   | amd64                       | arm64                        |
   | :-------- | :-------------------------- | :--------------------------- |
-  | 3.1.0.79  | Y                           | U                            |
-  | 3.0.0.118 | Y                           | U                            |
-  | 2.7.0.128 | Y                           | U                            |
-  | 2.5.0.80  | Y                           | U                            |
+  | 3.1.0.79  | Y                           | Y                            |
+  | 3.0.0.118 | Y                           | Y                            |
+  | 2.7.0.128 | Y                           | Y                            |
+  | 2.5.0.80  | Y                           | Y                            |
 
   Y- Yes, N- No, U- Untested
 
