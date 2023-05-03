@@ -4,9 +4,10 @@
   <version>1.0.0</version>
   <description>A driver for cameras using the Spinnaker SDK from Flir</description>
 
-  <maintainer email="fmascarich@nevada.unr.edu">Frank Mascarich</maintainer>
   <maintainer email="nikhil.v.khedekar@ntnu.no">Nikhil Khedekar</maintainer>
+  <maintainer email="morten.nissov@ntnu.no">Morten Nissov</maintainer>
   <maintainer email="paolo.de.petris@ntnu.no">Paolo De Petris</maintainer>
+  <maintainer email="fmascarich@nevada.unr.edu">Frank Mascarich</maintainer>
 
   <license>BSD</license>
 

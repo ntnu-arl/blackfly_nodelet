@@ -108,7 +108,8 @@ Set `enable_dyn_reconf` param in the launch file to `true` to change the followi
 
 You can open an issue or contact us for any questions:
 
-* [Nikhil Khedekar](mailto:nikhil.v.khedekar@ntnu.no)
-* [Paolo De Petris](mailto:paolo.de.petris@ntnu.no)
-* [Frank Mascarich](mailto:fmascarich@nevada.unr.edu)
-* [Kostas Alexis](mailto:konstantinos.alexis@ntnu.no)
+- [Nikhil Khedekar](mailto:nikhil.v.khedekar@ntnu.no)
+- [Morten Nissov](mailto:morten.nissov@ntnu.no)
+- [Paolo De Petris](mailto:paolo.de.petris@ntnu.no)
+- [Frank Mascarich](mailto:fmascarich@nevada.unr.edu)
+- [Kostas Alexis](mailto:konstantinos.alexis@ntnu.no)
