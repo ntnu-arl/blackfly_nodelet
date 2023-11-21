@@ -95,7 +95,12 @@ public:
         return;
       }
       image_msg->header.frame_id = m_cam_name;
-      image_msg->header.stamp = image_stamp;
+      // image_msg->header.stamp = image_stamp;
+      // use image->GetTimeStamp() instead of image_stamp to get the actual timestamp of the image
+      // GetTimeStamp() is in uint64_t, convert to ros::Time
+      image_msg->header.stamp = ros::Time(image->GetTimeStamp() / 1000000000, (image->GetTimeStamp() % 1000000000));
+      // ROS_INFO("Blackfly Nodelet: image stamp: %f", image_stamp.toSec());
+      // ROS_INFO("Blackfly PTP: image stamp: %llu", image->GetTimeStamp());
 
       // setup the camera info object
       sensor_msgs::CameraInfo::Ptr cam_info_msg = boost::make_shared<sensor_msgs::CameraInfo>(

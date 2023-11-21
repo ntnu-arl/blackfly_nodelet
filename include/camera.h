@@ -181,7 +181,18 @@ public:
       m_cam_ptr->Init();
 
       m_cam_ptr->AcquisitionStop();
+      m_cam_ptr->GevIEEE1588 = true;
+      // std::cout<< "GevIEEE1588 Mode: " << m_cam_ptr->GevIEEE1588Mode << std::endl;
+      m_cam_ptr->GevIEEE1588Mode = GevIEEE1588Mode_SlaveOnly;
 
+      // turn off balance white auto
+      // Retrieve Stream Parameters device nodemap
+      // Spinnaker::GenApi::INodeMap & sNodeMap = m_cam_ptr->GetTLStreamNodeMap();
+      // CEnumerationPtr ptrBalanceWhiteAuto = sNodeMap.GetNode("BalanceWhiteAuto");
+      // CEnumEntryPtr ptrBalanceWhiteAutoOff = ptrBalanceWhiteAuto->GetEntryByName("Off");
+      // ptrBalanceWhiteAuto->SetIntValue(ptrBalanceWhiteAutoOff->GetValue());
+      
+      
       // Set up pixel format
       if (m_cam_settings.mono) {
         m_cam_ptr->PixelFormat = PixelFormat_Mono8;
