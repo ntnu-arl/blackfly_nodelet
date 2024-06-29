@@ -112,8 +112,9 @@ public:
     m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
     m_time_stamp_deque_ptr = std::make_shared<std::deque<std_msgs::Header>>();
-    sub_time_stamp_ =
-      nh.subscribe("/sensor_sync_node/trigger_1", 10, &blackfly_camera::TriggerStampCallback, this);
+    sub_time_stamp_ = nh.subscribe(
+      "/sensor_sync_node/trigger_1", 100, &blackfly_camera::TriggerStampCallback, this,
+      ros::TransportHints().tcpNoDelay());
     pub_time_stamp_ =
       m_image_transport_ptr->advertiseCamera(m_cam_settings.cam_name + "/ros_time_now", 1);
 
