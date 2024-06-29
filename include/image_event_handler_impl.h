@@ -10,6 +10,7 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/fill_image.h>
 #include <sensor_msgs/image_encodings.h>
+#include <std_msgs/Header.h>
 
 #include <camera_info_manager/camera_info_manager.h>
 #include <image_transport/image_transport.h>
@@ -36,7 +37,7 @@ public:
     boost::shared_ptr<camera_info_manager::CameraInfoManager> p_c_info_mgr_ptr,
     DeviceEventHandlerImpl * p_device_event_handler_ptr, bool p_exp_time_comp_flag,
     std::shared_ptr<std::deque<std_msgs::Header>> p_time_stamp_deque_ptr,
-    image_transport::CameraPublisher * p_stamp_pub_ptr)
+    ros::Publisher * p_stamp_pub_ptr)
   {
     m_cam_name = p_cam_name;
     m_cam_ptr = p_cam_ptr;
@@ -131,9 +132,9 @@ public:
       // publish the image
       m_cam_pub_ptr->publish(*image_msg, *cam_info_msg, image_msg->header.stamp);
 
-      image_msg->header.stamp = ros_time_now;
-      cam_info_msg->header.stamp = ros_time_now;
-      m_stamp_pub_ptr->publish(*image_msg, *cam_info_msg, ros_time_now);
+      std_msgs::Header msg;
+      msg.stamp = ros_time_now;
+      m_stamp_pub_ptr->publish(msg);
     }
     image->Release();
   }
@@ -202,6 +203,6 @@ private:
 
   ros::Time prev_time_;
   std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;
-  image_transport::CameraPublisher * m_stamp_pub_ptr;
+  ros::Publisher * m_stamp_pub_ptr;
 };
 #endif  // IMG_EVENT_HANDLER_IMPL_
