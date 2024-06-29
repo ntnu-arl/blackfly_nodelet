@@ -85,7 +85,7 @@ public:
         // std::cout << sampling_time << std::endl;
       } else {
         // image_stamp = ros::Time(0);
-        ROS_WARN("image without trigger");
+        ROS_WARN("image without trigger, m_time_stamp_deque_ptr is empty");
         image->Release();
         return;
       }
