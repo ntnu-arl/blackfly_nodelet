@@ -102,6 +102,8 @@ public:
         sensor_msgs::CameraInfo(m_c_info_mgr_ptr->getCameraInfo()));
       cam_info_msg->header.frame_id = m_cam_name;
       cam_info_msg->header.stamp = image_msg->header.stamp;
+      cam_info_msg->binning_x = m_cam_ptr->BinningHorizontal.GetValue();
+      cam_info_msg->binning_y = m_cam_ptr->BinningVertical.GetValue();
 
       // publish the image
       m_cam_pub_ptr->publish(*image_msg, *cam_info_msg, image_msg->header.stamp);
