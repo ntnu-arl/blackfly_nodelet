@@ -24,81 +24,83 @@ blackfly_nodelet::~blackfly_nodelet()
 }
 void blackfly_nodelet::onInit()
 {
-  ros::NodeHandle & nh = getMTNodeHandle();
-  ros::NodeHandle & pnh = getMTPrivateNodeHandle();
+  ros::NodeHandle & nh = getMTPrivateNodeHandle();
 
   std::vector<std::string> camera_serials;
-  pnh.getParam("camera_serial_nums", camera_serials);
+  nh.getParam("camera_serial_nums", camera_serials);
 
   std::vector<std::string> camera_names;
-  pnh.getParam("camera_names", camera_names);
+  nh.getParam("camera_names", camera_names);
 
   std::vector<std::string> camera_info_paths;
-  pnh.getParam("camera_info_paths", camera_info_paths);
+  nh.getParam("camera_info_paths", camera_info_paths);
 
   std::vector<bool> mono_flags;
-  pnh.getParam("mono_flags", mono_flags);
+  nh.getParam("mono_flags", mono_flags);
 
   std::vector<bool> is_triggered_flags;
-  pnh.getParam("is_triggered_flags", is_triggered_flags);
+  nh.getParam("is_triggered_flags", is_triggered_flags);
 
   std::vector<float> trigger_delays;
-  pnh.getParam("trigger_delays", trigger_delays);
+  nh.getParam("trigger_delays", trigger_delays);
 
   std::vector<float> fps;
-  pnh.getParam("fps", fps);
+  nh.getParam("fps", fps);
 
   std::vector<bool> is_auto_exp_flags;
-  pnh.getParam("is_auto_exp_flags", is_auto_exp_flags);
+  nh.getParam("is_auto_exp_flags", is_auto_exp_flags);
 
   std::vector<float> max_auto_exp;
-  pnh.getParam("max_auto_exp", max_auto_exp);
+  nh.getParam("max_auto_exp", max_auto_exp);
 
   std::vector<float> min_auto_exp;
-  pnh.getParam("min_auto_exp", min_auto_exp);
+  nh.getParam("min_auto_exp", min_auto_exp);
 
   std::vector<float> fixed_exp;
-  pnh.getParam("fixed_exp", fixed_exp);
+  nh.getParam("fixed_exp", fixed_exp);
 
   std::vector<bool> auto_gain_flags;
-  pnh.getParam("auto_gains", auto_gain_flags);
+  nh.getParam("auto_gains", auto_gain_flags);
 
   std::vector<float> gains;
-  pnh.getParam("gains", gains);
+  nh.getParam("gains", gains);
 
   std::vector<float> max_gains;
-  pnh.getParam("max_gains", max_gains);
+  nh.getParam("max_gains", max_gains);
 
   std::vector<float> min_gains;
-  pnh.getParam("min_gains", min_gains);
+  nh.getParam("min_gains", min_gains);
 
   std::vector<bool> enable_gamma;
-  pnh.getParam("enable_gamma", enable_gamma);
+  nh.getParam("enable_gamma", enable_gamma);
 
   std::vector<float> gammas;
-  pnh.getParam("gammas", gammas);
+  nh.getParam("gammas", gammas);
 
   std::vector<int> binnings;
-  pnh.getParam("binnings", binnings);
+  nh.getParam("binnings", binnings);
 
   std::vector<int> binning_mode;
-  pnh.getParam("binning_mode", binning_mode);
+  nh.getParam("binning_mode", binning_mode);
 
   std::vector<int> lighting_mode;
-  pnh.getParam("lighting_mode", lighting_mode);
+  nh.getParam("lighting_mode", lighting_mode);
 
   std::vector<int> auto_exposure_priority;
-  pnh.getParam("auto_exposure_priority", auto_exposure_priority);
+  nh.getParam("auto_exposure_priority", auto_exposure_priority);
 
   std::vector<bool> exp_comp_flags;
-  pnh.getParam("exp_comp_flags", exp_comp_flags);
+  nh.getParam("exp_comp_flags", exp_comp_flags);
 
   std::vector<int> device_link_throughput_limits;
-  pnh.getParam("device_link_throughput_limits", device_link_throughput_limits);
+  nh.getParam("device_link_throughput_limits", device_link_throughput_limits);
 
   // enable dynamic reconfigure
   bool enable_dyn_reconf;
-  pnh.getParam("enable_dyn_reconf", enable_dyn_reconf);
+  nh.getParam("enable_dyn_reconf", enable_dyn_reconf);
+
+  bool autostart;
+  nh.getParam("autostart", autostart);
 
   int num_cameras_listed = camera_names.size();
   if (
@@ -170,10 +172,20 @@ void blackfly_nodelet::onInit()
 
   if (enable_dyn_reconf) {
     ROS_WARN_ONCE("Dynamic Reconfigure Triggered");
-    dr_srv = new dynamic_reconfigure::Server<blackfly::BlackFlyConfig>(pnh);
+    dr_srv = new dynamic_reconfigure::Server<blackfly::BlackFlyConfig>(nh);
     dyn_rec_cb = boost::bind(&blackfly_nodelet::callback_dyn_reconf, this, _1, _2);
     dr_srv->setCallback(dyn_rec_cb);
   }
+
+  if (autostart) {
+    ROS_INFO("Autostarting cameras");
+    for (int i = 0; i < camera_serials.size(); i++) {
+      Spinnaker::CameraPtr cam_ptr = camList.GetBySerial(camera_serials[i]);
+      cam_ptr->TLParamsLocked = 1;
+      cam_ptr->AcquisitionStart();
+    }
+  }
+
   ROS_INFO("Successfully launched all cameras.");
 }
 
