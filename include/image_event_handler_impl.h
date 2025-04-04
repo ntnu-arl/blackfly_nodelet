@@ -10,6 +10,7 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/fill_image.h>
 #include <sensor_msgs/image_encodings.h>
+#include <std_msgs/Header.h>
 
 #include <camera_info_manager/camera_info_manager.h>
 #include <image_transport/image_transport.h>
@@ -34,7 +35,9 @@ public:
   ImageEventHandlerImpl(
     std::string p_cam_name, CameraPtr p_cam_ptr, image_transport::CameraPublisher * p_cam_pub_ptr,
     boost::shared_ptr<camera_info_manager::CameraInfoManager> p_c_info_mgr_ptr,
-    DeviceEventHandlerImpl * p_device_event_handler_ptr, bool p_exp_time_comp_flag)
+    DeviceEventHandlerImpl * p_device_event_handler_ptr, bool p_exp_time_comp_flag,
+    std::shared_ptr<std::deque<std_msgs::Header>> p_time_stamp_deque_ptr,
+    ros::Publisher * p_stamp_pub_ptr)
   {
     m_cam_name = p_cam_name;
     m_cam_ptr = p_cam_ptr;
@@ -43,8 +46,11 @@ public:
     m_device_event_handler_ptr = p_device_event_handler_ptr;
     m_last_image_stamp = ros::Time(0, 0);
     m_exp_time_comp_flag = p_exp_time_comp_flag;
+    m_time_stamp_deque_ptr = p_time_stamp_deque_ptr;
     image_msg = boost::make_shared<sensor_msgs::Image>();
     // config_all_chunk_data();
+
+    m_stamp_pub_ptr = p_stamp_pub_ptr;
   }
   ~ImageEventHandlerImpl() { m_cam_ptr = nullptr; }
   void OnImageEvent(ImagePtr image)
@@ -68,6 +74,43 @@ public:
         "Blackfly Nodelet: Image retrieval failed: image incomplete for %s", m_cam_name.c_str());
       return;
     }
+    ros::Time ros_time_now = image_stamp;
+
+    if (m_cam_ptr->TriggerMode.GetValue() == TriggerMode_On) {
+      if (!m_time_stamp_deque_ptr->empty()) {
+        // find closest to device event stamp
+        const double approx_stamp = ros_time_now.toSec() - double(m_cam_ptr->ExposureTime.GetValue()) / 1000000.0;
+
+        auto closest_it = m_time_stamp_deque_ptr->begin();
+        double min_diff = std::numeric_limits<double>::max();
+        for (auto it=m_time_stamp_deque_ptr->begin(); it != m_time_stamp_deque_ptr->end(); ++it){
+          const double diff = approx_stamp - it->stamp.toSec();
+          if (std::abs(diff < min_diff)){
+            min_diff = diff;
+            closest_it = it;
+          }
+        }
+        
+        ros::Time closest_stamp = ros::Time(0);
+        if (min_diff > 0.1){
+          ROS_ERROR("min_diff too large, dropping: %f", min_diff);
+        }else{
+          // trim deque of old stamps
+          image_stamp = closest_it->stamp;
+          const int index = std::distance(m_time_stamp_deque_ptr->begin(), closest_it);
+          // std::cout << "Trimming deque, closest index: " << index << " current size: " << time_stamp_deque_.size() << '\n';
+          for (size_t i=0; i<=index; ++i){
+            m_time_stamp_deque_ptr->pop_front();
+          }
+          // std::cout << "deque size post trim: " << time_stamp_deque_.size() << '\n';
+        }
+      } else {
+        ROS_WARN("image without trigger, m_time_stamp_deque_ptr is empty");
+        image->Release();
+        return;
+      }
+    }
+
     if (m_exp_time_comp_flag) {
       // get the exposure time
       double exp_time = double(m_cam_ptr->ExposureTime.GetValue());
@@ -76,8 +119,10 @@ public:
       // get half the exposure time
       exp_time /= 2.0;
       // subtract from the end of exposure time to get the middle of the exposure
-      image_stamp -= ros::Duration(exp_time);
+      image_stamp += ros::Duration(exp_time);  // add to trigger stamp
+      ros_time_now -= ros::Duration(exp_time);
     }
+
     if (m_cam_pub_ptr->getNumSubscribers() > 0) {
       int height = image->GetHeight();
       int width = image->GetWidth();
@@ -105,6 +150,10 @@ public:
 
       // publish the image
       m_cam_pub_ptr->publish(*image_msg, *cam_info_msg, image_msg->header.stamp);
+
+      std_msgs::Header msg;
+      msg.stamp = ros_time_now;
+      m_stamp_pub_ptr->publish(msg);
     }
     image->Release();
   }
@@ -170,5 +219,9 @@ private:
   std::string m_cam_name;
   ros::Time m_last_image_stamp;
   bool m_exp_time_comp_flag = false;
+
+  ros::Time prev_time_;
+  std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;
+  ros::Publisher * m_stamp_pub_ptr;
 };
 #endif  // IMG_EVENT_HANDLER_IMPL_

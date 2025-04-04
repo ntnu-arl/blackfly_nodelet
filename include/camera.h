@@ -111,6 +111,12 @@ public:
       nh, m_cam_settings.cam_name, m_cam_settings.cam_info_path);
     m_cam_info_mgr_ptr->loadCameraInfo(m_cam_settings.cam_info_path);
 
+    m_time_stamp_deque_ptr = std::make_shared<std::deque<std_msgs::Header>>();
+    sub_time_stamp_ = nh.subscribe(
+      "/vectornav_driver_node/sync_out_stamp", 100, &blackfly_camera::TriggerStampCallback, this,
+      ros::TransportHints().tcpNoDelay());
+    pub_time_stamp_ = nh.advertise<std_msgs::Header>("ros_time_now", 10);
+
     // setup the camera
     setup_camera();
 
@@ -118,7 +124,8 @@ public:
     m_device_event_handler_ptr = new DeviceEventHandlerImpl(m_cam_ptr);
     m_image_event_handler_ptr = new ImageEventHandlerImpl(
       m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr,
-      m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
+      m_device_event_handler_ptr, m_cam_settings.exp_comp_flag, m_time_stamp_deque_ptr,
+      &pub_time_stamp_);
 
     // register event handlers
     m_cam_ptr->RegisterEventHandler(*m_device_event_handler_ptr);
@@ -280,6 +287,14 @@ public:
   }
 
 private:
+  void TriggerStampCallback(const std_msgs::HeaderPtr msg)
+  {
+    if (!m_time_stamp_deque_ptr->empty()) {
+      ROS_WARN("Possibly unused trigger message, queue.size() is %lu", m_time_stamp_deque_ptr->size());
+    }
+    m_time_stamp_deque_ptr->push_back(*msg);
+  }
+
   size_t total_size = sizeof(int8_t) * 1024;
   void * user_buffer = malloc(total_size);
   // void* buffer = nullptr;
@@ -290,4 +305,8 @@ private:
   image_transport::ImageTransport * m_image_transport_ptr;
   image_transport::CameraPublisher m_cam_pub;
   boost::shared_ptr<camera_info_manager::CameraInfoManager> m_cam_info_mgr_ptr;
+
+  ros::Subscriber sub_time_stamp_;
+  std::shared_ptr<std::deque<std_msgs::Header>> m_time_stamp_deque_ptr;
+  ros::Publisher pub_time_stamp_;
 };
