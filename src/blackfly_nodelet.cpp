@@ -44,9 +44,6 @@ void blackfly_nodelet::onInit()
   std::vector<float> trigger_delays;
   nh.getParam("trigger_delays", trigger_delays);
 
-  std::vector<float> fps;
-  nh.getParam("fps", fps);
-
   std::vector<bool> is_auto_exp_flags;
   nh.getParam("is_auto_exp_flags", is_auto_exp_flags);
 
@@ -89,12 +86,6 @@ void blackfly_nodelet::onInit()
   std::vector<int> auto_exposure_priority;
   nh.getParam("auto_exposure_priority", auto_exposure_priority);
 
-  std::vector<bool> exp_comp_flags;
-  nh.getParam("exp_comp_flags", exp_comp_flags);
-
-  std::vector<int> device_link_throughput_limits;
-  nh.getParam("device_link_throughput_limits", device_link_throughput_limits);
-
   // enable dynamic reconfigure
   bool enable_dyn_reconf;
   nh.getParam("enable_dyn_reconf", enable_dyn_reconf);
@@ -106,17 +97,14 @@ void blackfly_nodelet::onInit()
   if (
     camera_serials.size() != num_cameras_listed || camera_info_paths.size() != num_cameras_listed ||
     mono_flags.size() != num_cameras_listed || is_triggered_flags.size() != num_cameras_listed ||
-    trigger_delays.size() != num_cameras_listed || fps.size() != num_cameras_listed ||
-    is_auto_exp_flags.size() != num_cameras_listed || max_auto_exp.size() != num_cameras_listed ||
-    min_auto_exp.size() != num_cameras_listed || fixed_exp.size() != num_cameras_listed ||
-    auto_gain_flags.size() != num_cameras_listed || gains.size() != num_cameras_listed ||
-    max_gains.size() != num_cameras_listed || min_gains.size() != num_cameras_listed ||
-    enable_gamma.size() != num_cameras_listed || gammas.size() != num_cameras_listed ||
-    binnings.size() != num_cameras_listed || binning_mode.size() != num_cameras_listed ||
-    lighting_mode.size() != num_cameras_listed ||
-    auto_exposure_priority.size() != num_cameras_listed ||
-    exp_comp_flags.size() != num_cameras_listed ||
-    device_link_throughput_limits.size() != num_cameras_listed) {
+    trigger_delays.size() != num_cameras_listed || is_auto_exp_flags.size() != num_cameras_listed ||
+    max_auto_exp.size() != num_cameras_listed || min_auto_exp.size() != num_cameras_listed ||
+    fixed_exp.size() != num_cameras_listed || auto_gain_flags.size() != num_cameras_listed ||
+    gains.size() != num_cameras_listed || max_gains.size() != num_cameras_listed ||
+    min_gains.size() != num_cameras_listed || enable_gamma.size() != num_cameras_listed ||
+    gammas.size() != num_cameras_listed || binnings.size() != num_cameras_listed ||
+    binning_mode.size() != num_cameras_listed || lighting_mode.size() != num_cameras_listed ||
+    auto_exposure_priority.size() != num_cameras_listed) {
     ROS_FATAL("Camera settings don't match number of camera names");
     ros::shutdown();
   }
@@ -155,10 +143,9 @@ void blackfly_nodelet::onInit()
     }
     camera_settings settings(
       camera_names[i], camera_info_paths[i], mono_flags[i], is_triggered_flags[i],
-      trigger_delays[i], fps[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i],
+      trigger_delays[i], is_auto_exp_flags[i], max_auto_exp[i], min_auto_exp[i],
       fixed_exp[i], auto_gain_flags[i], gains[i], max_gains[i], min_gains[i], enable_gamma[i],
-      gammas[i], binnings[i], binning_mode[i], lighting_mode[i], auto_exposure_priority[i],
-      exp_comp_flags[i], device_link_throughput_limits[i]);
+      gammas[i], binnings[i], binning_mode[i], lighting_mode[i], auto_exposure_priority[i]);
 
     ROS_DEBUG("Created Camera Settings Object");
 

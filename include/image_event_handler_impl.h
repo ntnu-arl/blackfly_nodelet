@@ -34,7 +34,7 @@ public:
   ImageEventHandlerImpl(
     std::string p_cam_name, CameraPtr p_cam_ptr, image_transport::CameraPublisher * p_cam_pub_ptr,
     boost::shared_ptr<camera_info_manager::CameraInfoManager> p_c_info_mgr_ptr,
-    DeviceEventHandlerImpl * p_device_event_handler_ptr, bool p_exp_time_comp_flag)
+    DeviceEventHandlerImpl * p_device_event_handler_ptr)
   {
     m_cam_name = p_cam_name;
     m_cam_ptr = p_cam_ptr;
@@ -42,41 +42,16 @@ public:
     m_c_info_mgr_ptr = p_c_info_mgr_ptr;
     m_device_event_handler_ptr = p_device_event_handler_ptr;
     m_last_image_stamp = ros::Time(0, 0);
-    m_exp_time_comp_flag = p_exp_time_comp_flag;
     image_msg = boost::make_shared<sensor_msgs::Image>();
     // config_all_chunk_data();
   }
   ~ImageEventHandlerImpl() { m_cam_ptr = nullptr; }
   void OnImageEvent(ImagePtr image)
   {
-    ros::Time image_arrival_time = ros::Time::now();
-    // get the last end of exposure envent from the device event handler (exposure time compensated)
-    ros::Time last_event_stamp = m_device_event_handler_ptr->get_last_exposure_end();
-    ros::Time image_stamp;
-    // if the last event stamp is 0, no end of exposure event was received, assign the image arrival
-    // time instead
-    if (last_event_stamp.toSec() == 0.0) {
-      image_stamp = image_arrival_time;
-      ROS_WARN(
-        "Blackfly Nodelet: No event stamp on camera %s, assigning image arrival time instead",
-        m_cam_name.c_str());
-    } else {
-      image_stamp = last_event_stamp;
-    }
     if (image->IsIncomplete()) {
       ROS_ERROR(
         "Blackfly Nodelet: Image retrieval failed: image incomplete for %s", m_cam_name.c_str());
       return;
-    }
-    if (m_exp_time_comp_flag) {
-      // get the exposure time
-      double exp_time = double(m_cam_ptr->ExposureTime.GetValue());
-      // convert to seconds
-      exp_time /= 1000000.0;
-      // get half the exposure time
-      exp_time /= 2.0;
-      // subtract from the end of exposure time to get the middle of the exposure
-      image_stamp -= ros::Duration(exp_time);
     }
     if (m_cam_pub_ptr->getNumSubscribers() > 0) {
       int height = image->GetHeight();
@@ -95,15 +70,24 @@ public:
         return;
       }
       image_msg->header.frame_id = m_cam_name;
-      image_msg->header.stamp = image_stamp;
+      image_msg->header.stamp.fromNSec(image->GetTimeStamp());
+
+      int x_offset = image->GetXOffset();
+      int y_offset = image->GetYOffset();
+      int binning_x = *m_cam_ptr->BinningHorizontal;
+      int binning_y = *m_cam_ptr->BinningVertical;
 
       // setup the camera info object
       sensor_msgs::CameraInfo::Ptr cam_info_msg = boost::make_shared<sensor_msgs::CameraInfo>(
         sensor_msgs::CameraInfo(m_c_info_mgr_ptr->getCameraInfo()));
       cam_info_msg->header.frame_id = m_cam_name;
       cam_info_msg->header.stamp = image_msg->header.stamp;
-      cam_info_msg->binning_x = m_cam_ptr->BinningHorizontal.GetValue();
-      cam_info_msg->binning_y = m_cam_ptr->BinningVertical.GetValue();
+      cam_info_msg->binning_x = binning_x;
+      cam_info_msg->binning_y = binning_y;
+      cam_info_msg->roi.x_offset = x_offset * binning_x;
+      cam_info_msg->roi.y_offset = y_offset * binning_y;
+      cam_info_msg->roi.height = height * binning_y;
+      cam_info_msg->roi.width = width * binning_x;
 
       // publish the image
       m_cam_pub_ptr->publish(*image_msg, *cam_info_msg, image_msg->header.stamp);
@@ -171,6 +155,5 @@ private:
   image_transport::CameraPublisher * m_cam_pub_ptr;
   std::string m_cam_name;
   ros::Time m_last_image_stamp;
-  bool m_exp_time_comp_flag = false;
 };
 #endif  // IMG_EVENT_HANDLER_IMPL_

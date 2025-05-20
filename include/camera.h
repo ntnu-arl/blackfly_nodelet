@@ -26,7 +26,6 @@ struct camera_settings
     mono = false;
     is_triggered = false;
     trigger_delay = 13.0;
-    fps = 20.0;
     is_auto_exp = true;
     max_auto_exp_time = 30000.0;
     min_auto_exp_time = 50.0;
@@ -35,22 +34,19 @@ struct camera_settings
     gain = 1.0;
     enable_gamma = true;
     gamma = 1.0;
-    exp_comp_flag = false;
-    device_link_throughput_limit = 40325200;
   }
   camera_settings(
     std::string cam_name_p, std::string cam_info_path_p, bool mono_p, bool is_triggered_p,
-    float trigger_delay_p, float fps_p, bool is_auto_exp_p, float max_exp_p, float min_exp_p,
+    float trigger_delay_p, bool is_auto_exp_p, float max_exp_p, float min_exp_p,
     float fixed_exp_p, bool auto_gain_p, float gain_p, float max_gain_p, float min_gain_p,
     bool enable_gamma_p, float gamma_p, int binning_p, int binning_mode_p, int lighting_mode_p,
-    int auto_exposure_priority_p, bool exp_comp_flag_p, int device_link_throughput_limit_p)
+    int auto_exposure_priority_p)
   {
     cam_name = cam_name_p;
     cam_info_path = cam_info_path_p;
     mono = mono_p;
     is_triggered = is_triggered_p;
     trigger_delay = trigger_delay_p;
-    fps = fps_p;
     is_auto_exp = is_auto_exp_p;
     max_auto_exp_time = max_exp_p;
     min_auto_exp_time = min_exp_p;
@@ -65,15 +61,12 @@ struct camera_settings
     binning_mode = binning_mode_p;
     lighting_mode = lighting_mode_p;
     auto_exposure_priority = auto_exposure_priority_p;
-    exp_comp_flag = exp_comp_flag_p;
-    device_link_throughput_limit = device_link_throughput_limit_p;
   }
   std::string cam_name;
   std::string cam_info_path;
   bool mono;
   bool is_triggered;
   float trigger_delay;
-  float fps;
   bool is_auto_exp;
   float max_auto_exp_time;
   float min_auto_exp_time;
@@ -88,8 +81,6 @@ struct camera_settings
   int binning_mode;
   int lighting_mode;
   int auto_exposure_priority;
-  bool exp_comp_flag;
-  int device_link_throughput_limit;
 };
 
 class blackfly_camera
@@ -118,7 +109,7 @@ public:
     m_device_event_handler_ptr = new DeviceEventHandlerImpl(m_cam_ptr);
     m_image_event_handler_ptr = new ImageEventHandlerImpl(
       m_cam_settings.cam_name, m_cam_ptr, &m_cam_pub, m_cam_info_mgr_ptr,
-      m_device_event_handler_ptr, m_cam_settings.exp_comp_flag);
+      m_device_event_handler_ptr);
 
     // register event handlers
     m_cam_ptr->RegisterEventHandler(*m_device_event_handler_ptr);
@@ -191,8 +182,6 @@ public:
       m_cam_ptr->BinningVertical = m_cam_settings.binning;
       m_cam_ptr->BinningHorizontal = m_cam_settings.binning;
 
-      m_cam_ptr->BinningHorizontal = m_cam_settings.binning;
-
       // set binning type 0=Average, 1=Sum
       if (m_cam_settings.binning_mode == 0) {
         m_cam_ptr->BinningHorizontalMode.SetValue(
@@ -204,6 +193,9 @@ public:
           BinningHorizontalModeEnums::BinningHorizontalMode_Sum);
         m_cam_ptr->BinningVerticalMode.SetValue(BinningVerticalModeEnums::BinningVerticalMode_Sum);
       }
+
+      m_cam_ptr->Width = m_cam_ptr->Width.GetMax();
+      m_cam_ptr->Height = m_cam_ptr->Height.GetMax();
 
       // set lighting type 0=Normal, 1=Backlight, 2=Frontlight
       if (m_cam_settings.lighting_mode == 1) {
@@ -255,22 +247,10 @@ public:
         m_cam_ptr->AcquisitionFrameRateEnable = false;
         // m_cam_ptr->Counter = ;
         m_cam_ptr->TriggerDelay.SetValue(m_cam_settings.trigger_delay);
-      } else {
-        m_cam_ptr->TriggerMode = TriggerMode_Off;
-        m_cam_ptr->AcquisitionFrameRateEnable = true;
-        m_cam_ptr->AcquisitionFrameRate = m_cam_settings.fps;
       }
       m_cam_ptr->ExposureMode = ExposureMode_Timed;
-      set_buffer_size(5);
 
-      // Device Link Throughput Limit setting
-      CIntegerPtr ptrDeviceLinkThroughputLimit =
-        m_cam_ptr->GetNodeMap().GetNode("DeviceLinkThroughputLimit");
-      if (!IsAvailable(ptrDeviceLinkThroughputLimit) || !IsWritable(ptrDeviceLinkThroughputLimit)) {
-        std::cout << "Unable to set device link throughput limit (node retrieval; camera "
-                  << m_cam_settings.cam_name << "). Aborting..." << std::endl;
-      }
-      ptrDeviceLinkThroughputLimit->SetValue(m_cam_settings.device_link_throughput_limit);
+      m_cam_ptr->GevIEEE1588 = true;
     } catch (Spinnaker::Exception & ex) {
       ROS_ERROR("ERROR SETTING CAMERA SETTINGS!!!");
       std::cout << "Error: " << ex.what() << std::endl;
