@@ -113,7 +113,7 @@ public:
 
     m_time_stamp_deque_ptr = std::make_shared<std::deque<std_msgs::Header>>();
     sub_time_stamp_ = nh.subscribe(
-      "/sensor_sync_node/trigger_1", 100, &blackfly_camera::TriggerStampCallback, this,
+      "trigger", 100, &blackfly_camera::TriggerStampCallback, this,
       ros::TransportHints().tcpNoDelay());
     pub_time_stamp_ = nh.advertise<std_msgs::Header>("ros_time_now", 10);
 
