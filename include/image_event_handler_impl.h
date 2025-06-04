@@ -70,8 +70,8 @@ public:
       image_stamp = last_event_stamp;
     }
     if (image->IsIncomplete()) {
-      ROS_ERROR(
-        "Blackfly Nodelet: Image retrieval failed: image incomplete for %s", m_cam_name.c_str());
+      ROS_ERROR_THROTTLE(
+        10, "Blackfly Nodelet: Image retrieval failed: image incomplete for %s", m_cam_name.c_str());
       return;
     }
     ros::Time ros_time_now = image_stamp;
